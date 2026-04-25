@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конфиденциальный доступ</title>
+    <style>
+        /* Тут стили для красоты */
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41; /* Зеленый цвет как в матрице/старом терминале */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .hidden { display: none; }
+
+        .container {
+            background: #111;
+            border: 1px solid #00ff41;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        /* Анимация печатающегося текста */
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #00ff41;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff41; }
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        button:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px #00ff41;
+            transform: scale(1.1);
+        }
+
+        .emoji {
+            font-size: 50px;
+            filter: grayscale(0%); /* чтобы смайлы были цветные на черном фоне */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Блок 1: Загрузка -->
+    <div id="step1" class="container">
+        <p>> Загрузка ядра системы...</p>
+        <p class="typewriter">> Подключение к эмоциональному модулю...</p>
+        <button onclick="showStep2()" style="margin-top: 50px;">Продолжить ></button>
+    </div>
+
+    <!-- Блок 2: Ошибка -->
+    <div id="step2" class="container hidden">
+        <p style="color: red;">[CRITICAL ERROR]</p>
+        <p>Обнаружена неконтролируемая симпатия.</p>
+        <p>Объект: <strong>[Рося]</strong></p>
+        <p>Статус: Невозможно перестать думать.</p>
+        <button onclick="showStep3()">Показать логи ></button>
+    </div>
+
+    <!-- Блок 3: Финальное приглашение -->
+    <div id="step3" class="container hidden">
+        <p>> Система предлагает решение:</p>
+        <p style="font-size: 24px; margin: 20px 0;">Совместный поход за <span style="color: #ffcc00;">[ЕДА/КОФЕ]</span></p>
+        <div class="emoji">
+            👾 💖 ☕
+        </div>
+        <p>Время активации: Суббота, 18:00.</p>
+        <button onclick="showFinal()">Принять протокол</button>
+        <button onclick="alert('Ошибка: Кнопка не работает. Выбора нет 😏')" style="font-size: 12px; opacity: 0.5;">Отклонить</button>
+    </div>
+
+    <!-- Блок 4: Успех -->
+    <div id="step4" class="container hidden">
+        <p style="font-size: 30px;">✅ Успешно!</p>
+        <p>Ты приняла запрос на свидание.</p>
+        <p>Ожидай сообщение от разработчика для уточнения координат.</p>
+        <div class="emoji">
+            🚀
+        </div>
+    </div>
+
+    <script>
+        // Логика переключения экранов
+        function showStep2() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+        function showStep3() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+        }
+        function showFinal() {
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+        
+        // Маленький секрет в консоль (она это заметит, если нажмет F12, это прикольно)
+        console.log("%cОстановись, %cлюбопытный разработчик 👩‍💻", "font-size: 20px; color: red;", "");
+        console.log("%cЕсли ты это читаешь, знай: ты самая красивая, милая, умная, ответственная девушка во Вселенной <3", "color: #00ff41; font-size: 16px;");
+    </script>
+</body>
+</html>
