@@ -195,52 +195,55 @@
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Продолжить →</button>
     </div>
 
-    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО (вариант Б) -->
-    <div id="screen2" class="container hidden">
-        <div class="big-emoji">🌌</div>
-        <h2>Неопознанное чувство</h2>
-        <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
-        <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-        <p>Единственный выход — провести время вместе. Формат — за тобой.</p>
-        <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
-    </div>
+  <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
+<div id="screen2" class="container hidden">
+    <div class="big-emoji">🌌</div>
+    <h2>Неопознанное чувство</h2>
+    <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
+    <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
+    <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
+    <p>Единственный выход — провести время вместе.</p>
+    <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
+</div>
 
-    <!-- ЭКРАН 3: ПРИГЛАШЕНИЕ -->
-    <div id="screen3" class="container hidden">
-        <div class="big-emoji">☕</div>
-        <h2>Протокол счастья</h2>
-        <img class="cat-sticker" 
-             src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDZ0eHh6eGd2NHE4bGQ4M2VsbGxydmNqNmd4eW9kZzE3bGJ6eSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JIX9t2j0ZTN9S/giphy.gif" 
-             alt="Милый котик" onerror="this.style.display='none'">
-        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
-            Встреча за <span style="color: #c4956a;">самым вкусным кофе</span>?
-        </p>
-        <button onclick="nextScreen('screen3', 'screen4')">Принять приглашение 💫</button><br>
-        <button class="secondary-btn" id="declineBtn" onclick="declineInvite()">Отклонить (нет)</button>
-    </div>
+   <!-- ЭКРАН 3: ПРОТОКОЛ СЧАСТЬЯ (обновлён) -->
+<div id="screen3" class="container hidden">
+    <div class="big-emoji">🐱☕</div>
+    <h2>Протокол счастья</h2>
+    <img class="cat-sticker" 
+         src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWY3bGQ0eHkzNnJzOWxmb3FwN3kxcHNhbnl6aGpmcGJzMWN6dGZ2biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aD2saLzM9m/200.gif" 
+         alt="Милый котик" onerror="this.style.display='none'">
+    <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
+        Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
+    </p>
+    <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
+    <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
+</div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
-    <div id="screen4" class="container hidden">
-        <div class="big-emoji">☕</div>
-        <h2>Выбери вариант</h2>
-        <div class="options-grid">
-            <div class="option-card" onclick="selectOption('coffee', this)">
-                <span style="font-size: 40px;">☕</span> Кофе
-            </div>
-            <div class="option-card" onclick="selectOption('cinema', this)">
-                <span style="font-size: 40px;">🎬</span> Кино
-            </div>
-            <div class="option-card" onclick="selectOption('park', this)">
-                <span style="font-size: 40px;">🌳</span> Парк
-            </div>
-            <div class="option-card" onclick="selectOption('custom', this)">
-                <span style="font-size: 40px;">✍️</span> Свой
-            </div>
+   <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА (5 вариантов) -->
+<div id="screen4" class="container hidden">
+    <div class="big-emoji">✨</div>
+    <h2>Выбери вариант</h2>
+    <div class="options-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="option-card" onclick="selectOption('coffee', this)">
+            <span style="font-size: 36px;">☕</span> Кофе
         </div>
-        <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
-        <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
+        <div class="option-card" onclick="selectOption('cinema', this)">
+            <span style="font-size: 36px;">🎬</span> Кино
+        </div>
+        <div class="option-card" onclick="selectOption('park', this)">
+            <span style="font-size: 36px;">🌳</span> Парк
+        </div>
+        <div class="option-card" onclick="selectOption('walk', this)">
+            <span style="font-size: 36px;">🚶</span> Прогулка
+        </div>
+        <div class="option-card" onclick="selectOption('custom', this)">
+            <span style="font-size: 36px;">✍️</span> Свой
+        </div>
     </div>
+    <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
+    <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
+</div>
 
     <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
     <div id="screen5" class="container hidden">
@@ -486,6 +489,7 @@
                 case 'cinema': optionText = '🎬 Кино'; break;
                 case 'park': optionText = '🌳 Парк'; break;
                 case 'custom': optionText = '✍️ ' + customText; break;
+                case 'walk': optionText = '🚶 Прогулка'; break;
             }
             const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
             document.getElementById('summary').innerHTML = 
@@ -501,6 +505,7 @@
                 case 'cinema': optionText = 'Кино'; break;
                 case 'park': optionText = 'Парк'; break;
                 case 'custom': optionText = customText || '(свой вариант)'; break;
+                case 'walk': optionText = 'Прогулка'; break;
             }
             const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
             
