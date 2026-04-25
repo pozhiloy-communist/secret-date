@@ -184,7 +184,7 @@
     <div class="particles" id="particles"></div>
     <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
 
-    <!-- ✨ ЭКРАН 1: АНАЛИЗ (с таймером) -->
+    <!-- ЭКРАН 1: АНАЛИЗ -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -195,18 +195,18 @@
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Продолжить →</button>
     </div>
 
- <!-- ✨ ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
-<div id="screen2" class="container hidden">
-    <div class="big-emoji">🌌</div>
-    <h2>Неопознанное чувство</h2>
-    <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-    <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
-    <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-    <p>Единственный выход — провести время вместе. Формат — за тобой.</p>
-    <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
-</div>
+    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО (вариант Б) -->
+    <div id="screen2" class="container hidden">
+        <div class="big-emoji">🌌</div>
+        <h2>Неопознанное чувство</h2>
+        <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
+        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
+        <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
+        <p>Единственный выход — провести время вместе. Формат — за тобой.</p>
+        <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
+    </div>
 
-    <!-- ✨ ЭКРАН 3: ПРИГЛАШЕНИЕ (с убегающей кнопкой) -->
+    <!-- ЭКРАН 3: ПРИГЛАШЕНИЕ -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Протокол счастья</h2>
@@ -220,7 +220,7 @@
         <button class="secondary-btn" id="declineBtn" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ✨ ЭКРАН 4: ВЫБОР ВАРИАНТА -->
+    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Выбери вариант</h2>
@@ -242,7 +242,7 @@
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ✨ ЭКРАН 5: КАЛЕНДАРЬ -->
+    <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату</h2>
@@ -250,7 +250,7 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить дату →</button>
     </div>
 
-    <!-- ✨ ЭКРАН 6: ПОДТВЕРЖДЕНИЕ И ОТПРАВКА -->
+    <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
     <div id="screen6" class="container hidden">
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
@@ -259,7 +259,7 @@
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
 
-    <!-- ✨ ЭКРАН 7: ФИНАЛ -->
+    <!-- ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Заявка отправлена!</h2>
@@ -289,7 +289,6 @@
             const p = document.createElement('span');
             p.className = 'particle';
             p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            // Равномерно распределяем left по ширине экрана
             p.style.left = (i / particleCount * 100 + (Math.random() * 5 - 2.5)) + '%';
             p.style.animationDuration = (8 + Math.random() * 8) + 's';
             p.style.animationDelay = Math.random() * 6 + 's';
@@ -307,7 +306,7 @@
             "Сводка данных..."
         ];
         const finalMessage = "⚠️ Анализ завершён. Обнаружен острый недостаток любви, радости и счастья.";
-        const analysisDuration = 7000; // 7 секунд
+        const analysisDuration = 7000;
         let phraseIndex = 0;
         const phraseEl = document.getElementById('analysisPhrase');
         const continueBtn = document.getElementById('btnContinue');
@@ -532,7 +531,7 @@
             }
         }
 
-        // ======== МУЗЫКА (автостарт + fallback) ========
+        // ======== МУЗЫКА (автостарт + исправленная кнопка) ========
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
         let musicPlaying = false;
@@ -555,16 +554,16 @@
         function toggleMusic() {
             if (musicPlaying) {
                 bgMusic.pause();
+                musicPlaying = false;
                 musicBtn.textContent = '🎵';
                 musicBtn.style.opacity = '0.7';
             } else {
                 bgMusic.play().then(() => {
+                    musicPlaying = true;
                     musicBtn.textContent = '🎶';
                     musicBtn.style.opacity = '1';
                 }).catch(() => {});
-                musicPlaying = true;
             }
-            musicPlaying = !musicPlaying;
         }
 
         document.addEventListener('click', function initAudioOnce() {
