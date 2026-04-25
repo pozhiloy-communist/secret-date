@@ -9,19 +9,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 30%, #d4a574 70%, #c4956a 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: #e8d5b7; /* статичный карамельный фон (без градиентной анимации) */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
-        }
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         .particles {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -29,22 +22,20 @@
         }
         .particle {
             position: absolute; font-size: 20px;
-            animation: floatUp 8s linear infinite; opacity: 0.6;
+            animation: floatUp 10s linear infinite; opacity: 0.5;
         }
         @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
         .container {
             position: relative; z-index: 1;
-            background: rgba(255, 248, 240, 0.85);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 248, 240, 0.9); /* без backdrop-filter */
             border-radius: 30px; padding: 40px 35px;
             max-width: 420px; width: 90%; text-align: center;
-            box-shadow: 0 20px 60px rgba(139, 90, 43, 0.25), 
-                        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            box-shadow: 0 15px 40px rgba(139, 90, 43, 0.2);
             animation: containerAppear 0.8s ease-out;
         }
         @keyframes containerAppear {
@@ -59,19 +50,19 @@
         p {
             color: #5c4033; font-size: 17px; line-height: 1.6; margin: 10px 0;
         }
-        .big-emoji { font-size: 70px; margin: 20px 0; animation: bounce 2s ease-in-out infinite; }
+        .big-emoji { font-size: 60px; margin: 15px 0; animation: bounce 2.5s ease-in-out infinite; }
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-12px); }
         }
         .cat-sticker {
-            width: 120px; margin: 15px auto; display: block;
-            border-radius: 20px; animation: wiggle 3s ease-in-out infinite;
+            width: 110px; margin: 15px auto; display: block;
+            border-radius: 20px; animation: wiggle 4s ease-in-out infinite;
         }
         @keyframes wiggle {
             0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(3deg); }
-            75% { transform: rotate(-3deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
         }
         button {
             background: linear-gradient(135deg, #c4956a, #a67c52);
@@ -79,13 +70,12 @@
             font-size: 18px; font-weight: 600; border-radius: 50px;
             cursor: pointer; margin: 12px 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(164, 116, 82, 0.35);
+            box-shadow: 0 8px 20px rgba(164, 116, 82, 0.3);
             font-family: 'Nunito', sans-serif; letter-spacing: 0.5px;
         }
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 14px 35px rgba(164, 116, 82, 0.45);
-            background: linear-gradient(135deg, #d4a574, #b8865a);
+            box-shadow: 0 12px 30px rgba(164, 116, 82, 0.4);
         }
         button:active { transform: translateY(0); }
         .secondary-btn {
@@ -98,7 +88,7 @@
             box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
         }
         .loading-dots {
-            display: flex; justify-content: center; gap: 8px; margin: 20px 0;
+            display: flex; justify-content: center; gap: 8px; margin: 15px 0;
         }
         .dot {
             width: 12px; height: 12px; background: #c4956a;
@@ -116,7 +106,7 @@
             border: 2px solid #c4956a; color: #6b3a2a;
             width: 50px; height: 50px; border-radius: 50%;
             font-size: 24px; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
             display: flex; align-items: center; justify-content: center;
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
@@ -126,7 +116,7 @@
     <div class="particles" id="particles"></div>
     <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
 
-    <!-- ЭКРАН 1 -->
+    <!-- ЭКРАНЫ (без изменений) -->
     <div id="screen1" class="container">
         <div class="big-emoji">☕✨</div>
         <h2>Загрузка настроения...</h2>
@@ -137,7 +127,6 @@
         <button onclick="nextScreen('screen1', 'screen2')">Продолжить →</button>
     </div>
 
-    <!-- ЭКРАН 2 -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🐱💕</div>
         <h2>Ой!</h2>
@@ -148,7 +137,6 @@
         <button onclick="nextScreen('screen2', 'screen3')">Показать решение →</button>
     </div>
 
-    <!-- ЭКРАН 3 -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Протокол счастья</h2>
@@ -164,7 +152,6 @@
         <button class="secondary-btn" onclick="plead()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4 -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Ура! Решение принято!</h2>
@@ -175,21 +162,21 @@
     </div>
 
     <script>
-        // Парящие частицы
+        // ======== 1. ПАРТИКЛЫ (всего 10 шт) ========
         const particlesContainer = document.getElementById('particles');
-        const emojis = ['☕', '💫', '✨', '🧸', '💕', '🍰', '🐱', '🕯️', '🤎'];
-        for (let i = 0; i < 20; i++) {
+        const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
+        for (let i = 0; i < 10; i++) {
             const p = document.createElement('span');
             p.className = 'particle';
             p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (6 + Math.random() * 10) + 's';
-            p.style.animationDelay = Math.random() * 8 + 's';
-            p.style.fontSize = (14 + Math.random() * 20) + 'px';
+            p.style.animationDuration = (8 + Math.random() * 8) + 's';
+            p.style.animationDelay = Math.random() * 6 + 's';
+            p.style.fontSize = (16 + Math.random() * 18) + 'px';
             particlesContainer.appendChild(p);
         }
 
-        // Переход экранов
+        // ======== 2. ПЕРЕХОДЫ ЭКРАНОВ ========
         function nextScreen(from, to) {
             const curr = document.getElementById(from);
             const next = document.getElementById(to);
@@ -209,34 +196,30 @@
             }, 400);
         }
 
-        // Нытик-кнопка
         function plead() {
             const h2 = document.querySelector('#screen3 h2');
             h2.textContent = 'Ну пожа-а-алуйста 🥺';
             setTimeout(() => { h2.textContent = 'Протокол счастья'; }, 2000);
         }
 
-        // ===== ВСТРОЕННАЯ МУЗЫКА (Web Audio API) =====
+        // ======== 3. МУЗЫКА БЕЗ ЛАГОВ ========
         let audioCtx = null;
         let musicPlaying = false;
-        let musicTimer = null;
-        let currentNoteIndex = 0;
-        const musicBtn = document.getElementById('musicBtn');
-
-        // Нота «Волшебная ночь» (основная тема) в частотах
+        let nextNoteTimer = null;
+        let noteIndex = 0;
         const melody = [
             523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 880.00,
             783.99, 698.46, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00,
             349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 587.33,
             523.25, 493.88, 440.00, 392.00, 349.23, 329.63, 293.66, 261.63
         ];
-        const noteDuration = 0.25; // секунды на ноту
+        const noteDuration = 0.25; // секунды
 
         function playNote(freq, startTime, duration) {
             if (!audioCtx) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'square'; // 8-битный звук
+            osc.type = 'square';
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0.15, startTime);
             gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
@@ -246,39 +229,42 @@
             osc.stop(startTime + duration);
         }
 
-        function scheduleMelody() {
-            if (!audioCtx || !musicPlaying) return;
-            const now = audioCtx.currentTime;
-            // Планируем ноты на несколько секунд вперёд
-            const lookAhead = 2.0;
-            while (currentNoteIndex < melody.length && musicPlaying) {
-                const noteTime = audioCtx.currentTime + 0.1; // небольшой буфер
-                if (noteTime - now > lookAhead) break;
-                const freq = melody[currentNoteIndex % melody.length];
-                playNote(freq, noteTime, noteDuration);
-                currentNoteIndex++;
-                if (currentNoteIndex >= melody.length) currentNoteIndex = 0;
-            }
-            musicTimer = setTimeout(scheduleMelody, 100);
+        function scheduleNextNote() {
+            if (!musicPlaying || !audioCtx) return;
+            const freq = melody[noteIndex];
+            // Планируем ноту чуть вперёд, чтобы не было задержки
+            const playTime = audioCtx.currentTime + 0.05;
+            playNote(freq, playTime, noteDuration);
+            noteIndex = (noteIndex + 1) % melody.length;
+            // Следующая нота ровно через длительность
+            nextNoteTimer = setTimeout(scheduleNextNote, noteDuration * 1000);
         }
 
         function startMusic() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
+            // Возобновляем контекст, если он suspended
             if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
+                audioCtx.resume().then(() => {
+                    _actuallyStart();
+                });
+            } else {
+                _actuallyStart();
             }
+        }
+
+        function _actuallyStart() {
             musicPlaying = true;
-            currentNoteIndex = 0;
+            noteIndex = 0;
+            scheduleNextNote();
             musicBtn.textContent = '🎶';
             musicBtn.style.opacity = '1';
-            scheduleMelody();
         }
 
         function stopMusic() {
             musicPlaying = false;
-            if (musicTimer) clearTimeout(musicTimer);
+            if (nextNoteTimer) clearTimeout(nextNoteTimer);
             musicBtn.textContent = '🎵';
             musicBtn.style.opacity = '0.7';
         }
@@ -292,14 +278,14 @@
             }
         }
 
-        // Запуск при первом клике пользователя (политика браузера)
-        document.addEventListener('click', function initAudio() {
+        // Запуск музыки при первом клике пользователя (браузерная политика)
+        document.addEventListener('click', function initAudioOnce() {
             if (!audioCtx) {
                 startMusic();
             }
         }, { once: true });
 
-        // Консольное пасхалко
+        // ======== 4. КОНСОЛЬНОЕ ПАСХАЛКО ========
         console.log('%c🐱 Для той, кто читает консоль...', 'font-size: 18px; color: #c4956a;');
         console.log('%cРося, ты — солнце! Спасибо, что ты есть ☕💫', 'font-size: 16px; color: #6b3a2a; font-style: italic;');
         console.log('%cP.S. Суббота, 18:00. Кофе уже заказан :)', 'font-size: 14px; color: #a67c52;');
