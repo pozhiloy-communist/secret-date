@@ -1,1 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Роси 💫</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #e8d5b7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        .particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .particle {
+            position: absolute; font-size: 20px;
+            animation: floatUp 10s linear infinite; opacity: 0.5;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        .container {
+            position: relative; z-index: 1;
+            background: rgba(255, 248, 240, 0.9);
+            border-radius: 30px; padding: 35px 30px;
+            max-width: 450px; width: 90%; text-align: center;
+            box-shadow: 0 15px 40px rgba(139, 90, 43, 0.2);
+            animation: containerAppear 0.8s ease-out;
+            min-height: 400px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        @keyframes containerAppear {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .hidden { display: none !important; }
+        h2 {
+            color: #6b3a2a; font-size: 26px; font-weight: 700;
+            margin: 15px 0; line-height: 1.3;
+        }
+        p {
+            color: #5c4033; font-size: 17px; line-height: 1.6; margin: 10px 0;
+        }
+        .big-emoji { font-size: 60px; margin: 15px 0; animation: bounce 2.5s ease-in-out infinite; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .cat-sticker {
+            width: 110px; margin: 15px auto; display: block;
+            border-radius: 20px; animation: wiggle 4s ease-in-out infinite;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+        }
+        button {
+            background: linear-gradient(135deg, #c4956a, #a67c52);
+            color: #fff; border: none; padding: 16px 36px;
+            font-size: 18px; font-weight: 600; border-radius: 50px;
+            cursor: pointer; margin: 12px 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(164, 116, 82, 0.3);
+            font-family: 'Nunito', sans-serif; letter-spacing: 0.5px;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(164, 116, 82, 0.4);
+        }
+        button:active { transform: translateY(0); }
+        .secondary-btn {
+            background: transparent; color: #a67c52;
+            border: 2px solid #a67c52; box-shadow: none;
+            font-size: 14px; padding: 12px 24px;
+            position: relative;
+        }
+        .secondary-btn:hover {
+            background: rgba(166, 124, 82, 0.1);
+            box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
+        }
+        .loading-dots {
+            display: flex; justify-content: center; gap: 8px; margin: 15px 0;
+        }
+        .dot {
+            width: 12px; height: 12px; background: #c4956a;
+            border-radius: 50%; animation: dotPulse 1.4s ease-in-out infinite;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .music-toggle {
+            position: fixed; bottom: 20px; right: 20px; z-index: 10;
+            background: rgba(255, 248, 240, 0.9);
+            border: 2px solid #c4956a; color: #6b3a2a;
+            width: 50px; height: 50px; border-radius: 50%;
+            font-size: 24px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 15px; margin: 20px 0;
+        }
+        .option-card {
+            background: #fff9f2;
+            border: 2px solid #d4a574;
+            border-radius: 20px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            color: #6b3a2a;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
+        .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
+        #customInput {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 25px;
+            border: 2px solid #d4a574;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            width: 80%;
+            text-align: center;
+        }
+        .calendar {
+            background: #fff9f2;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+        .calendar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-header button {
+            background: none; border: none; color: #a67c52;
+            font-size: 24px; cursor: pointer; box-shadow: none;
+            padding: 5px 10px;
+        }
+        .calendar-header span { font-weight: 700; color: #6b3a2a; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); color: #a67c52; margin-bottom: 5px; }
+        .days-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; transition: 0.2s;
+            color: #5c4033;
+        }
+        .day-cell:hover { background: #f0e0cc; }
+        .day-cell.selected { background: #c4956a; color: white; font-weight: bold; }
+        .day-cell.empty { cursor: default; }
+        .send-btn { margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
 
+    <!-- ЭКРАН 1 -->
+    <div id="screen1" class="container">
+        <div class="big-emoji">☕✨</div>
+        <h2>Загрузка настроения...</h2>
+        <div class="loading-dots">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <p style="color: #8b6f5e;">Инициализация тёплых чувств</p>
+        <button onclick="nextScreen('screen1', 'screen2')">Продолжить →</button>
+    </div>
+
+    <!-- ЭКРАН 2 -->
+    <div id="screen2" class="container hidden">
+        <div class="big-emoji">🐱💕</div>
+        <h2>Ой!</h2>
+        <p>Система зафиксировала аномалию...<br>
+        <strong style="color: #c4956a; font-size: 20px;">Уровень милоты превышен!</strong></p>
+        <p style="color: #8b6f5e;">Источник: <span style="color: #6b3a2a; font-weight: 700;">Рося</span></p>
+        <p>Диагноз: острая нехватка кофе<br>в приятной компании ☕</p>
+        <button onclick="nextScreen('screen2', 'screen3')">Показать решение →</button>
+    </div>
+
+    <!-- ЭКРАН 3 -->
+    <div id="screen3" class="container hidden">
+        <div class="big-emoji">☕</div>
+        <h2>Протокол счастья</h2>
+        <img class="cat-sticker" 
+             src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDZ0eHh6eGd2NHE4bGQ4M2VsbGxydmNqNmd4eW9kZzE3bGJ6eSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JIX9t2j0ZTN9S/giphy.gif" 
+             alt="Милый котик" onerror="this.style.display='none'">
+        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
+            Встреча за <span style="color: #c4956a;">самым вкусным кофе</span>?
+        </p>
+        <button onclick="nextScreen('screen3', 'screen4')">Принять приглашение 💫</button><br>
+        <button class="secondary-btn" id="declineBtn" onclick="declineInvite()">Отклонить (нет)</button>
+    </div>
+
+    <!-- ЭКРАН 4 -->
+    <div id="screen4" class="container hidden">
+        <div class="big-emoji">☕</div>
+        <h2>Выбери вариант</h2>
+        <div class="options-grid">
+            <div class="option-card" onclick="selectOption('coffee', this)">
+                <span style="font-size: 40px;">☕</span> Кофе
+            </div>
+            <div class="option-card" onclick="selectOption('cinema', this)">
+                <span style="font-size: 40px;">🎬</span> Кино
+            </div>
+            <div class="option-card" onclick="selectOption('park', this)">
+                <span style="font-size: 40px;">🌳</span> Парк
+            </div>
+            <div class="option-card" onclick="selectOption('custom', this)">
+                <span style="font-size: 40px;">✍️</span> Свой
+            </div>
+        </div>
+        <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
+        <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
+    </div>
+
+    <!-- ЭКРАН 5 -->
+    <div id="screen5" class="container hidden">
+        <div class="big-emoji" style="font-size: 40px;">📅</div>
+        <h2>Выбери дату</h2>
+        <div class="calendar" id="calendarWidget"></div>
+        <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить дату →</button>
+    </div>
+
+    <!-- ЭКРАН 6 -->
+    <div id="screen6" class="container hidden">
+        <div class="big-emoji">💌</div>
+        <h2>Почти всё...</h2>
+        <p id="summary"></p>
+        <button class="send-btn" onclick="sendForm()">Отправить приглашение ✨</button>
+        <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
+    </div>
+
+    <!-- ЭКРАН 7 -->
+    <div id="screen7" class="container hidden">
+        <div class="big-emoji">🎉💖</div>
+        <h2>Заявка отправлена!</h2>
+        <p>Твой выбор и дата уже у того самого<br>таинственного отправителя ✉️</p>
+        <p style="color: #8b6f5e;">Жди весточку в ближайшее время</p>
+        <div class="big-emoji" style="font-size: 50px;">🐱☕✨</div>
+        <p style="font-size: 14px; color: #a67c52; margin-top: 20px;">До встречи, Рося! 💫</p>
+    </div>
+
+    <script>
+        // ========== ЕДИНСТВЕННАЯ СТРОКА, КОТОРУЮ НУЖНО ЗАМЕНИТЬ ==========
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
+        // =================================================================
+
+        // Глобальные переменные
+        let selectedOption = null;
+        let customText = '';
+        let selectedDate = null;
+
+        // ======== ПАРТИКЛЫ ========
+        const particlesContainer = document.getElementById('particles');
+        const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
+        for (let i = 0; i < 10; i++) {
+            const p = document.createElement('span');
+            p.className = 'particle';
+            p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (8 + Math.random() * 8) + 's';
+            p.style.animationDelay = Math.random() * 6 + 's';
+            p.style.fontSize = (16 + Math.random() * 18) + 'px';
+            particlesContainer.appendChild(p);
+        }
+
+        // ======== ПЕРЕХОДЫ ========
+        function nextScreen(from, to) {
+            const curr = document.getElementById(from);
+            const next = document.getElementById(to);
+            curr.style.opacity = '0';
+            curr.style.transform = 'translateY(-20px)';
+            curr.style.transition = '0.5s ease';
+            setTimeout(() => {
+                curr.classList.add('hidden');
+                next.classList.remove('hidden');
+                next.style.opacity = '0';
+                next.style.transform = 'translateY(20px)';
+                requestAnimationFrame(() => {
+                    next.style.transition = '0.5s ease';
+                    next.style.opacity = '1';
+                    next.style.transform = 'translateY(0)';
+                });
+            }, 400);
+        }
+
+        // ======== УБЕГАЮЩАЯ КНОПКА ========
+        const declineBtn = document.getElementById('declineBtn');
+        if (declineBtn) {
+            declineBtn.addEventListener('mouseenter', moveAway);
+            declineBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                moveAway();
+                setTimeout(() => alert('🚫 Отказы не принимаются!'), 100);
+            });
+        }
+        function moveAway() {
+            const btn = document.getElementById('declineBtn');
+            const container = btn.parentElement;
+            const maxX = container.clientWidth - btn.clientWidth;
+            const maxY = container.clientHeight - btn.clientHeight;
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * maxX + 'px';
+            btn.style.top = Math.random() * maxY + 'px';
+        }
+        function declineInvite() {
+            moveAway();
+            alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
+        }
+
+        // ======== ВЫБОР ВАРИАНТА ========
+        function selectOption(type, element) {
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedOption = type;
+            const customInput = document.getElementById('customInput');
+            if (type === 'custom') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                customText = '';
+                customInput.value = '';
+            }
+            updateNextToCalendarBtn();
+        }
+        function updateCustom() {
+            customText = document.getElementById('customInput').value;
+            updateNextToCalendarBtn();
+        }
+        function updateNextToCalendarBtn() {
+            const btn = document.getElementById('nextToCalendar');
+            if (selectedOption === 'custom') {
+                btn.disabled = (customText.trim() === '');
+            } else if (selectedOption) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        // ======== КАЛЕНДАРЬ ========
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let pickedDate = null;
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarWidget');
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+            let html = `
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">←</button>
+                    <span>${monthNames[currentMonth]} ${currentYear}</span>
+                    <button onclick="changeMonth(1)">→</button>
+                </div>
+                <div class="weekdays">
+                    <span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span>
+                </div>
+                <div class="days-grid">
+            `;
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="day-cell empty"></div>';
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(currentYear, currentMonth, d);
+                let cls = 'day-cell';
+                if (pickedDate && date.toDateString() === pickedDate.toDateString()) {
+                    cls += ' selected';
+                }
+                if (date < today) {
+                    cls += ' empty';
+                    html += `<div class="${cls}" style="color:#ccc;">${d}</div>`;
+                } else {
+                    html += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            pickedDate = null;
+            document.getElementById('confirmDateBtn').disabled = true;
+            renderCalendar();
+        }
+
+        function pickDay(day) {
+            pickedDate = new Date(currentYear, currentMonth, day);
+            document.getElementById('confirmDateBtn').disabled = false;
+            renderCalendar();
+        }
+
+        function goToCalendar() {
+            currentMonth = new Date().getMonth();
+            currentYear = new Date().getFullYear();
+            pickedDate = null;
+            document.getElementById('confirmDateBtn').disabled = true;
+            renderCalendar();
+            nextScreen('screen4', 'screen5');
+        }
+
+        function goToConfirm() {
+            if (!pickedDate) return;
+            selectedDate = pickedDate;
+            let optionText = '';
+            switch (selectedOption) {
+                case 'coffee': optionText = '☕ Кофе'; break;
+                case 'cinema': optionText = '🎬 Кино'; break;
+                case 'park': optionText = '🌳 Парк'; break;
+                case 'custom': optionText = '✍️ ' + customText; break;
+            }
+            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            document.getElementById('summary').innerHTML = 
+                `<strong>Вариант:</strong> ${optionText}<br><strong>Дата:</strong> ${dateStr}`;
+            nextScreen('screen5', 'screen6');
+        }
+
+        // ======== ОТПРАВКА ЧЕРЕЗ ПРОКСИ ========
+        async function sendForm() {
+            let optionText = '';
+            switch (selectedOption) {
+                case 'coffee': optionText = 'Кофе'; break;
+                case 'cinema': optionText = 'Кино'; break;
+                case 'park': optionText = 'Парк'; break;
+                case 'custom': optionText = customText || '(свой вариант)'; break;
+            }
+            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            
+            const payload = {
+                name: 'Рося',
+                variant: optionText,
+                date: dateStr
+            };
+            
+            const statusEl = document.getElementById('sendStatus');
+            statusEl.textContent = 'Отправляю...';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.ok) {
+                    statusEl.textContent = '✅ Отправлено!';
+                    nextScreen('screen6', 'screen7');
+                } else {
+                    statusEl.textContent = '❌ Ошибка сервера. Попробуй ещё раз.';
+                }
+            } catch (err) {
+                statusEl.textContent = '❌ Сетевая ошибка.';
+                console.error(err);
+            }
+        }
+
+        // ======== МУЗЫКА ========
+        let audioCtx = null;
+        let musicPlaying = false;
+        let nextNoteTimer = null;
+        let noteIndex = 0;
+        const melody = [
+            523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 880.00,
+            783.99, 698.46, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00,
+            349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 587.33,
+            523.25, 493.88, 440.00, 392.00, 349.23, 329.63, 293.66, 261.63
+        ];
+        const noteDuration = 0.25;
+        function playNote(freq, startTime, duration) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.15, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(startTime); osc.stop(startTime + duration);
+        }
+        function scheduleNextNote() {
+            if (!musicPlaying || !audioCtx) return;
+            const freq = melody[noteIndex];
+            const playTime = audioCtx.currentTime + 0.05;
+            playNote(freq, playTime, noteDuration);
+            noteIndex = (noteIndex + 1) % melody.length;
+            nextNoteTimer = setTimeout(scheduleNextNote, noteDuration * 1000);
+        }
+        function startMusic() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => { _actuallyStart(); });
+            } else { _actuallyStart(); }
+        }
+        function _actuallyStart() {
+            musicPlaying = true; noteIndex = 0;
+            scheduleNextNote();
+            document.getElementById('musicBtn').textContent = '🎶';
+            document.getElementById('musicBtn').style.opacity = '1';
+        }
+        function stopMusic() {
+            musicPlaying = false;
+            if (nextNoteTimer) clearTimeout(nextNoteTimer);
+            document.getElementById('musicBtn').textContent = '🎵';
+            document.getElementById('musicBtn').style.opacity = '0.7';
+        }
+        function toggleMusic() {
+            if (musicPlaying) { stopMusic(); if (audioCtx) audioCtx.suspend(); }
+            else { startMusic(); }
+        }
+        document.addEventListener('click', function initAudioOnce() {
+            if (!audioCtx) startMusic();
+        }, { once: true });
+
+        // Первый рендер календаря
+        renderCalendar();
+    </script>
+</body>
+</html>
