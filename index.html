@@ -9,7 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Nunito', sans-serif;
-            background: #e8d5b7; /* статичный карамельный фон (без градиентной анимации) */
+            background: #e8d5b7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -32,17 +32,19 @@
         }
         .container {
             position: relative; z-index: 1;
-            background: rgba(255, 248, 240, 0.9); /* без backdrop-filter */
-            border-radius: 30px; padding: 40px 35px;
-            max-width: 420px; width: 90%; text-align: center;
+            background: rgba(255, 248, 240, 0.9);
+            border-radius: 30px; padding: 35px 30px;
+            max-width: 450px; width: 90%; text-align: center;
             box-shadow: 0 15px 40px rgba(139, 90, 43, 0.2);
             animation: containerAppear 0.8s ease-out;
+            min-height: 400px;
+            display: flex; flex-direction: column; justify-content: center;
         }
         @keyframes containerAppear {
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         h2 {
             color: #6b3a2a; font-size: 26px; font-weight: 700;
             margin: 15px 0; line-height: 1.3;
@@ -82,6 +84,7 @@
             background: transparent; color: #a67c52;
             border: 2px solid #a67c52; box-shadow: none;
             font-size: 14px; padding: 12px 24px;
+            position: relative; /* для убегания */
         }
         .secondary-btn:hover {
             background: rgba(166, 124, 82, 0.1);
@@ -110,13 +113,80 @@
             display: flex; align-items: center; justify-content: center;
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
+
+        /* Стили для выбора варианта */
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 15px; margin: 20px 0;
+        }
+        .option-card {
+            background: #fff9f2;
+            border: 2px solid #d4a574;
+            border-radius: 20px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            color: #6b3a2a;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
+        .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
+
+        /* Поле ввода своего варианта */
+        #customInput {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 25px;
+            border: 2px solid #d4a574;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            width: 80%;
+            text-align: center;
+        }
+
+        /* Календарь */
+        .calendar {
+            background: #fff9f2;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+        .calendar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-header button {
+            background: none; border: none; color: #a67c52;
+            font-size: 24px; cursor: pointer; box-shadow: none;
+            padding: 5px 10px;
+        }
+        .calendar-header span { font-weight: 700; color: #6b3a2a; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); color: #a67c52; margin-bottom: 5px; }
+        .days-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; transition: 0.2s;
+            color: #5c4033;
+        }
+        .day-cell:hover { background: #f0e0cc; }
+        .day-cell.selected { background: #c4956a; color: white; font-weight: bold; }
+        .day-cell.empty { cursor: default; }
+
+        /* Кнопка отправки */
+        .send-btn { margin-top: 15px; }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
 
-    <!-- ЭКРАНЫ (без изменений) -->
+    <!-- ✨ ЭКРАН 1: ЗАГРУЗКА -->
     <div id="screen1" class="container">
         <div class="big-emoji">☕✨</div>
         <h2>Загрузка настроения...</h2>
@@ -127,6 +197,7 @@
         <button onclick="nextScreen('screen1', 'screen2')">Продолжить →</button>
     </div>
 
+    <!-- ✨ ЭКРАН 2: ОБНАРУЖЕНИЕ -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🐱💕</div>
         <h2>Ой!</h2>
@@ -137,6 +208,7 @@
         <button onclick="nextScreen('screen2', 'screen3')">Показать решение →</button>
     </div>
 
+    <!-- ✨ ЭКРАН 3: ПРИГЛАШЕНИЕ (с убегающей кнопкой) -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Протокол счастья</h2>
@@ -144,25 +216,73 @@
              src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDZ0eHh6eGd2NHE4bGQ4M2VsbGxydmNqNmd4eW9kZzE3bGJ6eSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JIX9t2j0ZTN9S/giphy.gif" 
              alt="Милый котик" onerror="this.style.display='none'">
         <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
-            Встреча за <span style="color: #c4956a;">самым вкусным кофе</span>
+            Встреча за <span style="color: #c4956a;">самым вкусным кофе</span>?
         </p>
-        <p>📅 <strong>Суббота</strong><br>⏰ <strong>18:00</strong></p>
-        <p style="color: #8b6f5e; font-style: italic;">P.S. Котик одобряет 🐾</p>
         <button onclick="nextScreen('screen3', 'screen4')">Принять приглашение 💫</button><br>
-        <button class="secondary-btn" onclick="plead()">Отклонить (нет)</button>
+        <button class="secondary-btn" id="declineBtn" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
+    <!-- ✨ ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
+        <div class="big-emoji">☕</div>
+        <h2>Выбери вариант</h2>
+        <div class="options-grid">
+            <div class="option-card" onclick="selectOption('coffee', this)">
+                <span style="font-size: 40px;">☕</span> Кофе
+            </div>
+            <div class="option-card" onclick="selectOption('cinema', this)">
+                <span style="font-size: 40px;">🎬</span> Кино
+            </div>
+            <div class="option-card" onclick="selectOption('park', this)">
+                <span style="font-size: 40px;">🌳</span> Парк
+            </div>
+            <div class="option-card" onclick="selectOption('custom', this)">
+                <span style="font-size: 40px;">✍️</span> Свой
+            </div>
+        </div>
+        <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
+        <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
+    </div>
+
+    <!-- ✨ ЭКРАН 5: КАЛЕНДАРЬ -->
+    <div id="screen5" class="container hidden">
+        <div class="big-emoji" style="font-size: 40px;">📅</div>
+        <h2>Выбери дату</h2>
+        <div class="calendar" id="calendarWidget"></div>
+        <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить дату →</button>
+    </div>
+
+    <!-- ✨ ЭКРАН 6: ПОДТВЕРЖДЕНИЕ И ОТПРАВКА -->
+    <div id="screen6" class="container hidden">
+        <div class="big-emoji">💌</div>
+        <h2>Почти всё...</h2>
+        <p id="summary"></p>
+        <button class="send-btn" onclick="sendToTelegram()">Отправить приглашение ✨</button>
+        <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
+    </div>
+
+    <!-- ✨ ЭКРАН 7: ФИНАЛ -->
+    <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
-        <h2>Ура! Решение принято!</h2>
-        <p>Ты только что согласилась<br>на <strong>самое уютное свидание</strong></p>
-        <p style="color: #8b6f5e;">Ожидай весточку с деталями<br>от таинственного отправителя ✉️</p>
+        <h2>Заявка отправлена!</h2>
+        <p>Твой выбор и дата уже у того самого<br>таинственного отправителя ✉️</p>
+        <p style="color: #8b6f5e;">Жди весточку в ближайшее время</p>
         <div class="big-emoji" style="font-size: 50px;">🐱☕✨</div>
         <p style="font-size: 14px; color: #a67c52; margin-top: 20px;">До встречи, Рося! 💫</p>
     </div>
 
     <script>
-        // ======== 1. ПАРТИКЛЫ (всего 10 шт) ========
+        // ========== ВСТАВЬ СЮДА СВОИ ДАННЫЕ ==========
+        const BOT_TOKEN = '8699432202:AAEQfq9OpUvPOB-rv-d6JiyS-Wa6i_B_RTc';
+        const CHAT_ID = '1634846125';
+        // ===========================================
+
+        // Глобальные переменные
+        let selectedOption = null;      // 'coffee', 'cinema', 'park', 'custom'
+        let customText = '';
+        let selectedDate = null;       // объект Date
+
+        // ======== 1. ПАРТИКЛЫ ========
         const particlesContainer = document.getElementById('particles');
         const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
         for (let i = 0; i < 10; i++) {
@@ -196,13 +316,198 @@
             }, 400);
         }
 
-        function plead() {
-            const h2 = document.querySelector('#screen3 h2');
-            h2.textContent = 'Ну пожа-а-алуйста 🥺';
-            setTimeout(() => { h2.textContent = 'Протокол счастья'; }, 2000);
+        // ======== 3. УБЕГАЮЩАЯ КНОПКА ========
+        const declineBtn = document.getElementById('declineBtn');
+        if (declineBtn) {
+            declineBtn.addEventListener('mouseenter', moveAway);
+            declineBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                moveAway();
+                setTimeout(() => alert('🚫 Отказы не принимаются!'), 100);
+            });
+        }
+        function moveAway() {
+            const btn = document.getElementById('declineBtn');
+            const container = btn.parentElement;
+            const maxX = container.clientWidth - btn.clientWidth;
+            const maxY = container.clientHeight - btn.clientHeight;
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            btn.style.position = 'absolute';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+        }
+        function declineInvite() {
+            moveAway();
+            alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         }
 
-        // ======== 3. МУЗЫКА БЕЗ ЛАГОВ ========
+        // ======== 4. ВЫБОР ВАРИАНТА ========
+        function selectOption(type, element) {
+            // Снимаем выделение со всех карточек
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedOption = type;
+
+            const customInput = document.getElementById('customInput');
+            if (type === 'custom') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                customText = '';
+                customInput.value = '';
+            }
+            updateNextToCalendarBtn();
+        }
+
+        function updateCustom() {
+            customText = document.getElementById('customInput').value;
+            updateNextToCalendarBtn();
+        }
+
+        function updateNextToCalendarBtn() {
+            const btn = document.getElementById('nextToCalendar');
+            if (selectedOption === 'custom') {
+                btn.disabled = (customText.trim() === '');
+            } else if (selectedOption) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        // ======== 5. КАЛЕНДАРЬ ========
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let pickedDate = null;
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarWidget');
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0 вс
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+            let html = `
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">←</button>
+                    <span>${monthNames[currentMonth]} ${currentYear}</span>
+                    <button onclick="changeMonth(1)">→</button>
+                </div>
+                <div class="weekdays">
+                    <span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span>
+                </div>
+                <div class="days-grid">
+            `;
+            // Пустые ячейки до первого дня
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="day-cell empty"></div>';
+            }
+            // Дни месяца
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(currentYear, currentMonth, d);
+                let cls = 'day-cell';
+                if (pickedDate && date.toDateString() === pickedDate.toDateString()) {
+                    cls += ' selected';
+                }
+                // Блокируем прошедшие дни
+                if (date < today) {
+                    cls += ' empty';
+                    html += `<div class="${cls}" style="color:#ccc;">${d}</div>`;
+                } else {
+                    html += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            pickedDate = null;
+            document.getElementById('confirmDateBtn').disabled = true;
+            renderCalendar();
+        }
+
+        function pickDay(day) {
+            pickedDate = new Date(currentYear, currentMonth, day);
+            document.getElementById('confirmDateBtn').disabled = false;
+            renderCalendar();
+        }
+
+        function goToCalendar() {
+            // сброс календаря
+            currentMonth = new Date().getMonth();
+            currentYear = new Date().getFullYear();
+            pickedDate = null;
+            document.getElementById('confirmDateBtn').disabled = true;
+            renderCalendar();
+            nextScreen('screen4', 'screen5');
+        }
+
+        function goToConfirm() {
+            if (!pickedDate) return;
+            selectedDate = pickedDate;
+            // Формируем итоговый текст
+            let optionText = '';
+            switch (selectedOption) {
+                case 'coffee': optionText = '☕ Кофе'; break;
+                case 'cinema': optionText = '🎬 Кино'; break;
+                case 'park': optionText = '🌳 Парк'; break;
+                case 'custom': optionText = '✍️ ' + customText; break;
+            }
+            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            document.getElementById('summary').innerHTML = 
+                `<strong>Вариант:</strong> ${optionText}<br><strong>Дата:</strong> ${dateStr}`;
+            nextScreen('screen5', 'screen6');
+        }
+
+        // ======== 6. ОТПРАВКА В TELEGRAM ========
+        async function sendToTelegram() {
+            if (!BOT_TOKEN || !CHAT_ID || BOT_TOKEN.includes('ВСТАВЬ')) {
+                alert('⚠️ Бот не настроен. Смотри инструкцию в коде.');
+                return;
+            }
+            let optionText = '';
+            switch (selectedOption) {
+                case 'coffee': optionText = 'Кофе'; break;
+                case 'cinema': optionText = 'Кино'; break;
+                case 'park': optionText = 'Парк'; break;
+                case 'custom': optionText = customText || '(свой вариант)'; break;
+            }
+            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            const message = `💌 Новая заявка!\n\n👤 Имя: Рося\n📌 Вариант: ${optionText}\n📅 Дата: ${dateStr}\n🕐 Время: 18:00 (или уточнить)\n\n✨ Жди подтверждения!`;
+
+            const statusEl = document.getElementById('sendStatus');
+            statusEl.textContent = 'Отправляю...';
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                const data = await response.json();
+                if (data.ok) {
+                    statusEl.textContent = '✅ Отправлено!';
+                    nextScreen('screen6', 'screen7');
+                } else {
+                    statusEl.textContent = '❌ Ошибка: ' + JSON.stringify(data);
+                }
+            } catch (err) {
+                statusEl.textContent = '❌ Сетевая ошибка. Попробуй ещё раз.';
+                console.error(err);
+            }
+        }
+
+        // ======== 7. МУЗЫКА (без лагов) ========
         let audioCtx = null;
         let musicPlaying = false;
         let nextNoteTimer = null;
@@ -213,8 +518,7 @@
             349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 587.33,
             523.25, 493.88, 440.00, 392.00, 349.23, 329.63, 293.66, 261.63
         ];
-        const noteDuration = 0.25; // секунды
-
+        const noteDuration = 0.25;
         function playNote(freq, startTime, duration) {
             if (!audioCtx) return;
             const osc = audioCtx.createOscillator();
@@ -223,72 +527,45 @@
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0.15, startTime);
             gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(startTime);
-            osc.stop(startTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(startTime); osc.stop(startTime + duration);
         }
-
         function scheduleNextNote() {
             if (!musicPlaying || !audioCtx) return;
             const freq = melody[noteIndex];
-            // Планируем ноту чуть вперёд, чтобы не было задержки
             const playTime = audioCtx.currentTime + 0.05;
             playNote(freq, playTime, noteDuration);
             noteIndex = (noteIndex + 1) % melody.length;
-            // Следующая нота ровно через длительность
             nextNoteTimer = setTimeout(scheduleNextNote, noteDuration * 1000);
         }
-
         function startMusic() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            // Возобновляем контекст, если он suspended
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') {
-                audioCtx.resume().then(() => {
-                    _actuallyStart();
-                });
-            } else {
-                _actuallyStart();
-            }
+                audioCtx.resume().then(() => { _actuallyStart(); });
+            } else { _actuallyStart(); }
         }
-
         function _actuallyStart() {
-            musicPlaying = true;
-            noteIndex = 0;
+            musicPlaying = true; noteIndex = 0;
             scheduleNextNote();
-            musicBtn.textContent = '🎶';
-            musicBtn.style.opacity = '1';
+            document.getElementById('musicBtn').textContent = '🎶';
+            document.getElementById('musicBtn').style.opacity = '1';
         }
-
         function stopMusic() {
             musicPlaying = false;
             if (nextNoteTimer) clearTimeout(nextNoteTimer);
-            musicBtn.textContent = '🎵';
-            musicBtn.style.opacity = '0.7';
+            document.getElementById('musicBtn').textContent = '🎵';
+            document.getElementById('musicBtn').style.opacity = '0.7';
         }
-
         function toggleMusic() {
-            if (musicPlaying) {
-                stopMusic();
-                if (audioCtx) audioCtx.suspend();
-            } else {
-                startMusic();
-            }
+            if (musicPlaying) { stopMusic(); if (audioCtx) audioCtx.suspend(); }
+            else { startMusic(); }
         }
-
-        // Запуск музыки при первом клике пользователя (браузерная политика)
         document.addEventListener('click', function initAudioOnce() {
-            if (!audioCtx) {
-                startMusic();
-            }
+            if (!audioCtx) startMusic();
         }, { once: true });
 
-        // ======== 4. КОНСОЛЬНОЕ ПАСХАЛКО ========
-        console.log('%c🐱 Для той, кто читает консоль...', 'font-size: 18px; color: #c4956a;');
-        console.log('%cРося, ты — солнце! Спасибо, что ты есть ☕💫', 'font-size: 16px; color: #6b3a2a; font-style: italic;');
-        console.log('%cP.S. Суббота, 18:00. Кофе уже заказан :)', 'font-size: 14px; color: #a67c52;');
+        // Инициализация календаря после загрузки
+        renderCalendar();
     </script>
 </body>
 </html>
