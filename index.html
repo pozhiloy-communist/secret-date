@@ -484,62 +484,35 @@
             }
         }
 
-        // ======== МУЗЫКА ========
-        let audioCtx = null;
-        let musicPlaying = false;
-        let nextNoteTimer = null;
-        let noteIndex = 0;
-        const melody = [
-            523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 880.00,
-            783.99, 698.46, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00,
-            349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 587.33,
-            523.25, 493.88, 440.00, 392.00, 349.23, 329.63, 293.66, 261.63
-        ];
-        const noteDuration = 0.25;
-        function playNote(freq, startTime, duration) {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.15, startTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(startTime); osc.stop(startTime + duration);
-        }
-        function scheduleNextNote() {
-            if (!musicPlaying || !audioCtx) return;
-            const freq = melody[noteIndex];
-            const playTime = audioCtx.currentTime + 0.05;
-            playNote(freq, playTime, noteDuration);
-            noteIndex = (noteIndex + 1) % melody.length;
-            nextNoteTimer = setTimeout(scheduleNextNote, noteDuration * 1000);
-        }
-        function startMusic() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume().then(() => { _actuallyStart(); });
-            } else { _actuallyStart(); }
-        }
-        function _actuallyStart() {
-            musicPlaying = true; noteIndex = 0;
-            scheduleNextNote();
-            document.getElementById('musicBtn').textContent = '🎶';
-            document.getElementById('musicBtn').style.opacity = '1';
-        }
-        function stopMusic() {
-            musicPlaying = false;
-            if (nextNoteTimer) clearTimeout(nextNoteTimer);
-            document.getElementById('musicBtn').textContent = '🎵';
-            document.getElementById('musicBtn').style.opacity = '0.7';
-        }
-        function toggleMusic() {
-            if (musicPlaying) { stopMusic(); if (audioCtx) audioCtx.suspend(); }
-            else { startMusic(); }
-        }
-        document.addEventListener('click', function initAudioOnce() {
-            if (!audioCtx) startMusic();
-        }, { once: true });
+        // ======== МУЗЫКА (простой плеер) ========
+const bgMusic = new Audio('music.mp3');
+bgMusic.loop = true;
+let musicPlaying = false;
+const musicBtn = document.getElementById('musicBtn');
+
+function toggleMusic() {
+    if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = '🎵';
+        musicBtn.style.opacity = '0.7';
+    } else {
+        bgMusic.play();
+        musicBtn.textContent = '🎶';
+        musicBtn.style.opacity = '1';
+    }
+    musicPlaying = !musicPlaying;
+}
+
+// Запуск при первом клике (правила браузеров)
+document.addEventListener('click', function initAudioOnce() {
+    if (!musicPlaying) {
+        bgMusic.play().then(() => {
+            musicPlaying = true;
+            musicBtn.textContent = '🎶';
+            musicBtn.style.opacity = '1';
+        }).catch(e => console.log('Ждем клика для музыки:', e));
+    }
+}, { once: true });
 
         // Первый рендер календаря
         renderCalendar();
