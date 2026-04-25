@@ -80,6 +80,12 @@
             box-shadow: 0 12px 30px rgba(164, 116, 82, 0.4);
         }
         button:active { transform: translateY(0); }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
+        }
         .secondary-btn {
             background: transparent; color: #a67c52;
             border: 2px solid #a67c52; box-shadow: none;
@@ -178,18 +184,18 @@
     <div class="particles" id="particles"></div>
     <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
 
-    <!-- ЭКРАН 1 -->
+    <!-- ✨ ЭКРАН 1: АНАЛИЗ (с таймером) -->
     <div id="screen1" class="container">
-        <div class="big-emoji">☕✨</div>
-        <h2>Загрузка настроения...</h2>
-        <div class="loading-dots">
+        <div class="big-emoji">🔍✨</div>
+        <h2>Анализ настроения...</h2>
+        <div class="loading-dots" id="analysisDots">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
-        <p style="color: #8b6f5e;">Инициализация тёплых чувств</p>
-        <button onclick="nextScreen('screen1', 'screen2')">Продолжить →</button>
+        <p id="analysisPhrase" style="color: #8b6f5e; min-height: 24px;">Инициализация тёплых чувств...</p>
+        <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Продолжить →</button>
     </div>
 
-    <!-- ЭКРАН 2 -->
+    <!-- ✨ ЭКРАН 2: ОБНАРУЖЕНИЕ -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🐱💕</div>
         <h2>Ой!</h2>
@@ -200,7 +206,7 @@
         <button onclick="nextScreen('screen2', 'screen3')">Показать решение →</button>
     </div>
 
-    <!-- ЭКРАН 3 -->
+    <!-- ✨ ЭКРАН 3: ПРИГЛАШЕНИЕ (с убегающей кнопкой) -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Протокол счастья</h2>
@@ -214,7 +220,7 @@
         <button class="secondary-btn" id="declineBtn" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4 -->
+    <!-- ✨ ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">☕</div>
         <h2>Выбери вариант</h2>
@@ -236,7 +242,7 @@
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ЭКРАН 5 -->
+    <!-- ✨ ЭКРАН 5: КАЛЕНДАРЬ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату</h2>
@@ -244,7 +250,7 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить дату →</button>
     </div>
 
-    <!-- ЭКРАН 6 -->
+    <!-- ✨ ЭКРАН 6: ПОДТВЕРЖДЕНИЕ И ОТПРАВКА -->
     <div id="screen6" class="container hidden">
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
@@ -253,7 +259,7 @@
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
 
-    <!-- ЭКРАН 7 -->
+    <!-- ✨ ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Заявка отправлена!</h2>
@@ -264,7 +270,9 @@
     </div>
 
     <script>
-        // ========== ЕДИНСТВЕННАЯ СТРОКА, КОТОРУЮ НУЖНО ЗАМЕНИТЬ ==========
+        // =================================================================
+        // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
+        // =================================================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
         // =================================================================
 
@@ -273,21 +281,63 @@
         let customText = '';
         let selectedDate = null;
 
-        // ======== ПАРТИКЛЫ ========
+        // ======== 1. ПАРТИКЛЫ (равномерное распределение) ========
         const particlesContainer = document.getElementById('particles');
         const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
-        for (let i = 0; i < 10; i++) {
+        const particleCount = 12;
+        for (let i = 0; i < particleCount; i++) {
             const p = document.createElement('span');
             p.className = 'particle';
             p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            p.style.left = Math.random() * 100 + '%';
+            // Равномерно распределяем left по ширине экрана
+            p.style.left = (i / particleCount * 100 + (Math.random() * 5 - 2.5)) + '%';
             p.style.animationDuration = (8 + Math.random() * 8) + 's';
             p.style.animationDelay = Math.random() * 6 + 's';
             p.style.fontSize = (16 + Math.random() * 18) + 'px';
             particlesContainer.appendChild(p);
         }
 
-        // ======== ПЕРЕХОДЫ ========
+        // ======== 1.5. СЦЕНАРИЙ АНАЛИЗА НА ПЕРВОМ ЭКРАНЕ ========
+        const analysisPhrases = [
+            "Инициализация тёплых чувств...",
+            "Сканирование улыбки...",
+            "Измерение уровня радости...",
+            "Поиск скрытых эмоций...",
+            "Обработка позитивных сигналов...",
+            "Сводка данных..."
+        ];
+        const finalMessage = "⚠️ Анализ завершён. Обнаружен острый недостаток любви, радости и счастья.";
+        const analysisDuration = 7000; // 7 секунд
+        let phraseIndex = 0;
+        const phraseEl = document.getElementById('analysisPhrase');
+        const continueBtn = document.getElementById('btnContinue');
+
+        const phraseInterval = setInterval(() => {
+            phraseIndex++;
+            if (phraseIndex < analysisPhrases.length) {
+                phraseEl.textContent = analysisPhrases[phraseIndex];
+            } else {
+                clearInterval(phraseInterval);
+                phraseEl.textContent = finalMessage;
+                phraseEl.style.color = '#a67c52';
+                continueBtn.disabled = false;
+                continueBtn.style.opacity = '1';
+                document.getElementById('analysisDots').style.display = 'none';
+            }
+        }, Math.floor(analysisDuration / analysisPhrases.length));
+
+        setTimeout(() => {
+            if (continueBtn.disabled) {
+                clearInterval(phraseInterval);
+                phraseEl.textContent = finalMessage;
+                phraseEl.style.color = '#a67c52';
+                continueBtn.disabled = false;
+                continueBtn.style.opacity = '1';
+                document.getElementById('analysisDots').style.display = 'none';
+            }
+        }, analysisDuration);
+
+        // ======== 2. ПЕРЕХОДЫ ЭКРАНОВ ========
         function nextScreen(from, to) {
             const curr = document.getElementById(from);
             const next = document.getElementById(to);
@@ -307,7 +357,7 @@
             }, 400);
         }
 
-        // ======== УБЕГАЮЩАЯ КНОПКА ========
+        // ======== 3. УБЕГАЮЩАЯ КНОПКА ========
         const declineBtn = document.getElementById('declineBtn');
         if (declineBtn) {
             declineBtn.addEventListener('mouseenter', moveAway);
@@ -331,7 +381,7 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         }
 
-        // ======== ВЫБОР ВАРИАНТА ========
+        // ======== 4. ВЫБОР ВАРИАНТА ========
         function selectOption(type, element) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             element.classList.add('selected');
@@ -362,7 +412,7 @@
             }
         }
 
-        // ======== КАЛЕНДАРЬ ========
+        // ======== 5. КАЛЕНДАРЬ ========
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let pickedDate = null;
@@ -392,9 +442,7 @@
             for (let d = 1; d <= daysInMonth; d++) {
                 const date = new Date(currentYear, currentMonth, d);
                 let cls = 'day-cell';
-                if (pickedDate && date.toDateString() === pickedDate.toDateString()) {
-                    cls += ' selected';
-                }
+                if (pickedDate && date.toDateString() === pickedDate.toDateString()) cls += ' selected';
                 if (date < today) {
                     cls += ' empty';
                     html += `<div class="${cls}" style="color:#ccc;">${d}</div>`;
@@ -446,7 +494,7 @@
             nextScreen('screen5', 'screen6');
         }
 
-        // ======== ОТПРАВКА ЧЕРЕЗ ПРОКСИ ========
+        // ======== 6. ОТПРАВКА ЧЕРЕЗ ПРОКСИ ========
         async function sendForm() {
             let optionText = '';
             switch (selectedOption) {
@@ -484,35 +532,50 @@
             }
         }
 
-        // ======== МУЗЫКА (простой плеер) ========
-const bgMusic = new Audio('music.mp3');
-bgMusic.loop = true;
-let musicPlaying = false;
-const musicBtn = document.getElementById('musicBtn');
+        // ======== МУЗЫКА (автостарт + fallback) ========
+        const bgMusic = new Audio('music.mp3');
+        bgMusic.loop = true;
+        let musicPlaying = false;
+        const musicBtn = document.getElementById('musicBtn');
 
-function toggleMusic() {
-    if (musicPlaying) {
-        bgMusic.pause();
-        musicBtn.textContent = '🎵';
-        musicBtn.style.opacity = '0.7';
-    } else {
-        bgMusic.play();
-        musicBtn.textContent = '🎶';
-        musicBtn.style.opacity = '1';
-    }
-    musicPlaying = !musicPlaying;
-}
+        async function tryAutoplay() {
+            try {
+                await bgMusic.play();
+                musicPlaying = true;
+                musicBtn.textContent = '🎶';
+                musicBtn.style.opacity = '1';
+            } catch (e) {
+                console.log('Автовоспроизведение заблокировано, ждём клика');
+                musicBtn.textContent = '🔇';
+                musicBtn.style.opacity = '0.7';
+            }
+        }
+        tryAutoplay();
 
-// Запуск при первом клике (правила браузеров)
-document.addEventListener('click', function initAudioOnce() {
-    if (!musicPlaying) {
-        bgMusic.play().then(() => {
-            musicPlaying = true;
-            musicBtn.textContent = '🎶';
-            musicBtn.style.opacity = '1';
-        }).catch(e => console.log('Ждем клика для музыки:', e));
-    }
-}, { once: true });
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.style.opacity = '0.7';
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.textContent = '🎶';
+                    musicBtn.style.opacity = '1';
+                }).catch(() => {});
+                musicPlaying = true;
+            }
+            musicPlaying = !musicPlaying;
+        }
+
+        document.addEventListener('click', function initAudioOnce() {
+            if (!musicPlaying) {
+                bgMusic.play().then(() => {
+                    musicPlaying = true;
+                    musicBtn.textContent = '🎶';
+                    musicBtn.style.opacity = '1';
+                }).catch(e => console.log('Всё ещё ждём клика:', e));
+            }
+        }, { once: true });
 
         // Первый рендер календаря
         renderCalendar();
