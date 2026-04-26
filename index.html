@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Для Роси 💫</title>
+    <!-- Фавиконка (роза) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -113,7 +115,7 @@
         /* Музыкальный блок */
         .music-controls {
             position: fixed; bottom: 20px; right: 20px; z-index: 10;
-            display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+            display: flex; flex-direction: row; align-items: center; gap: 8px;
         }
         .music-toggle {
             background: rgba(255, 248, 240, 0.9);
@@ -122,31 +124,32 @@
             font-size: 24px; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
             display: flex; align-items: center; justify-content: center;
+            order: 1; /* кнопка всегда первая */
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
 
-        /* Слайдер громкости */
+        /* Слайдер громкости – вертикальный, скрыт по умолчанию */
         .volume-slider {
-            writing-mode: vertical-lr;
-            direction: rtl; /* чтобы ползунок шёл снизу вверх */
+            -webkit-appearance: slider-vertical;
+            width: 20px;
             height: 80px;
-            width: 4px;
-            -webkit-appearance: none;
             background: #d4a574;
-            border-radius: 2px;
+            border-radius: 4px;
             outline: none;
             cursor: pointer;
+            display: none; /* изначально скрыт */
+            order: 2;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
             background: #c4956a;
             border-radius: 50%;
             border: 2px solid #fff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .volume-slider::-moz-range-thumb {
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
             background: #c4956a;
             border-radius: 50%;
             border: 2px solid #fff;
@@ -225,7 +228,7 @@
 <body>
     <div class="particles" id="particles"></div>
 
-    <!-- МУЗЫКА: кнопка + ползунок -->
+    <!-- МУЗЫКА: кнопка + вертикальный ползунок -->
     <div class="music-controls">
         <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
@@ -259,7 +262,7 @@
         <h2>Протокол счастья</h2>
         <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ ГИФКУ -->
         <img class="cat-sticker" 
-             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGtpaGdkcmhpOGM3ZDBudmIyc3Q1YnpjZXB4djR5aHJyYWhmNzNwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
+             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
              alt="Милый котик" onerror="this.style.display='none'">
         <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
             Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
@@ -327,7 +330,7 @@
         // =================================================================
         // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
         // =================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/library/d/1PrebfO9R13LGEaL3qVXr7eWOWLQql73DcX02CcjilDiPQ9YCrbrpHZFh/1';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
         // =================================================================
 
         // Глобальные переменные
@@ -595,7 +598,7 @@
             }
         }
 
-        // ======== МУЗЫКА (тихий автостарт + ползунок + иконки) ========
+        // ======== МУЗЫКА (тихий автостарт + вертикальный ползунок + иконки) ========
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
         bgMusic.volume = 0.35; // тише по умолчанию
@@ -603,9 +606,14 @@
         const musicBtn = document.getElementById('musicBtn');
         const volumeSlider = document.getElementById('volumeSlider');
 
+        // Показать/скрыть слайдер
+        function updateVolumeSliderVisibility() {
+            volumeSlider.style.display = musicPlaying ? 'block' : 'none';
+        }
+
         // Обработчик ползунка
         volumeSlider.addEventListener('input', function() {
-            bgMusic.volume = this.value;
+            bgMusic.volume = parseFloat(this.value);
         });
 
         // Автостарт
@@ -613,12 +621,14 @@
             try {
                 await bgMusic.play();
                 musicPlaying = true;
-                musicBtn.textContent = '🎵'; // играет — одна нота
+                musicBtn.textContent = '🎵';
                 musicBtn.style.opacity = '1';
+                updateVolumeSliderVisibility();
             } catch (e) {
                 console.log('Автовоспроизведение заблокировано, ждём клика');
-                musicBtn.textContent = '🔇'; // выключен — перечёркнутый граммофон
+                musicBtn.textContent = '🔇';
                 musicBtn.style.opacity = '0.7';
+                updateVolumeSliderVisibility();
             }
         }
         tryAutoplay();
@@ -637,6 +647,7 @@
                     musicBtn.style.opacity = '1';
                 }).catch(() => {});
             }
+            updateVolumeSliderVisibility();
         }
 
         // Если автостарт не сработал, включится при первом клике
@@ -646,6 +657,7 @@
                     musicPlaying = true;
                     musicBtn.textContent = '🎵';
                     musicBtn.style.opacity = '1';
+                    updateVolumeSliderVisibility();
                 }).catch(e => console.log('Всё ещё ждём клика:', e));
             }
         }, { once: true });
