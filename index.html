@@ -89,18 +89,12 @@
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
 
-        /* Кнопка Отклонить — абсолютное позиционирование, плавное убегание */
+        /* Кнопка Отклонить – фиксированный размер, абсолютное позиционирование */
         #declineBtn {
             position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 10;
-            transition: left 0.3s ease, top 0.3s ease;
-            width: auto;
-            min-width: 160px;
-            white-space: nowrap;
-            padding: 12px 24px;
+            width: 200px;
+            padding: 12px 0;
             margin: 0;
             box-sizing: border-box;
             background: transparent;
@@ -108,11 +102,12 @@
             border: 2px solid #a67c52;
             box-shadow: none;
             font-size: 14px;
+            white-space: nowrap;
+            transition: left 0.3s ease, top 0.3s ease;
         }
         #declineBtn:hover {
             background: rgba(166, 124, 82, 0.1);
             box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
-            transform: translateX(-50%); /* без scale */
         }
 
         .loading-dots {
@@ -266,9 +261,9 @@
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
         <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
+        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося Сеьнко</span>.</p>
         <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-        <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство. 🚨</p>
+        <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство! 🚨</p>
         <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
 
@@ -278,7 +273,7 @@
         <h2>Протокол счастья</h2>
         <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ ГИФКУ -->
         <img class="cat-sticker" 
-             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
+             src="КОТИК_ГИФКА" 
              alt="Милый котик" onerror="this.style.display='none'">
         <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
             Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
@@ -346,7 +341,7 @@
         // =================================================================
         // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
         // =================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...твой_url.../exec';
         // =================================================================
 
         // Глобальные переменные
@@ -354,7 +349,7 @@
         let customText = '';
         let selectedDate = null;
 
-        // ======== 1. ПАРТИКЛЫ (равномерное распределение) ========
+        // ======== 1. ПАРТИКЛЫ ========
         const particlesContainer = document.getElementById('particles');
         const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
         const particleCount = 12;
@@ -369,7 +364,7 @@
             particlesContainer.appendChild(p);
         }
 
-        // ======== 1.5. СЦЕНАРИЙ АНАЛИЗА НА ПЕРВОМ ЭКРАНЕ ========
+        // ======== 2. СЦЕНАРИЙ АНАЛИЗА ========
         const analysisPhrases = [
             "Инициализация тёплых чувств...",
             "Сканирование улыбки...",
@@ -409,7 +404,7 @@
             }
         }, analysisDuration);
 
-        // ======== 2. ПЕРЕХОДЫ ЭКРАНОВ ========
+        // ======== 3. ПЕРЕХОДЫ ЭКРАНОВ ========
         function nextScreen(from, to) {
             const curr = document.getElementById(from);
             const next = document.getElementById(to);
@@ -426,10 +421,22 @@
                     next.style.opacity = '1';
                     next.style.transform = 'translateY(0)';
                 });
+
+                // Сброс кнопки «Отклонить» в центр при показе экрана 3
+                if (to === 'screen3') {
+                    const btn = document.getElementById('declineBtn');
+                    const container = document.getElementById('screen3');
+                    const containerRect = container.getBoundingClientRect();
+                    // Центрируем по горизонтали, отступ снизу 40px
+                    btn.style.left = (containerRect.width / 2 - 100) + 'px'; // 200px / 2
+                    btn.style.top = (containerRect.height - 40 - btn.offsetHeight) + 'px'; // 40px от нижнего края
+                    btn.style.transition = 'none'; // Убираем анимацию при сбросе
+                    setTimeout(() => { btn.style.transition = 'left 0.3s ease, top 0.3s ease'; }, 50);
+                }
             }, 400);
         }
 
-        // ======== 3. УБЕГАЮЩАЯ КНОПКА (исправленная) ========
+        // ======== 4. УБЕГАЮЩАЯ КНОПКА ========
         const declineBtn = document.getElementById('declineBtn');
         if (declineBtn) {
             declineBtn.addEventListener('mouseenter', moveAway);
@@ -446,7 +453,7 @@
             const containerRect = container.getBoundingClientRect();
             const btnRect = btn.getBoundingClientRect();
 
-            // Учитываем внутренние отступы (padding: 35px 30px)
+            // Учитываем отступы внутри контейнера (padding: 35px 30px)
             const paddingX = 30;
             const paddingY = 35;
             const maxX = containerRect.width - btnRect.width - paddingX * 2;
@@ -457,8 +464,6 @@
             const newX = Math.random() * maxX + minX;
             const newY = Math.random() * maxY + minY;
 
-            // Убираем центрирование и плавно перемещаем
-            btn.style.transform = 'none';
             btn.style.left = newX + 'px';
             btn.style.top = newY + 'px';
         }
@@ -468,7 +473,7 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         }
 
-        // ======== 4. ВЫБОР ВАРИАНТА ========
+        // ======== 5. ВЫБОР ВАРИАНТА ========
         function selectOption(type, element) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             element.classList.add('selected');
@@ -499,7 +504,7 @@
             }
         }
 
-        // ======== 5. КАЛЕНДАРЬ + ВРЕМЯ ========
+        // ======== 6. КАЛЕНДАРЬ + ВРЕМЯ ========
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let pickedDate = null;
@@ -588,7 +593,7 @@
             nextScreen('screen5', 'screen6');
         }
 
-        // ======== 6. ОТПРАВКА ЧЕРЕЗ ПРОКСИ ========
+        // ======== 7. ОТПРАВКА ========
         async function sendForm() {
             let optionText = '';
             switch (selectedOption) {
@@ -602,7 +607,7 @@
             const timeStr = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
             
             const payload = {
-                name: 'Рося',
+                name: 'Рося Сеьнко',
                 variant: optionText,
                 date: dateStr,
                 time: timeStr
