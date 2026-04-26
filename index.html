@@ -98,6 +98,25 @@
             background: rgba(166, 124, 82, 0.1);
             box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
         }
+        /* Кнопка Отклонить — всегда абсолютная, плавная, не меняет размер */
+        #declineBtn {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            transition: left 0.3s ease, top 0.3s ease;
+            width: auto;
+            min-width: 160px;
+            white-space: nowrap;
+            padding: 12px 24px;
+            margin: 0;
+            /* убираем возможное изменение размера при ховере */
+            box-sizing: border-box;
+        }
+        #declineBtn:hover {
+            transform: translateX(-50%); /* оставляем центрирование, но без scale */
+        }
         .loading-dots {
             display: flex; justify-content: center; gap: 8px; margin: 15px 0;
         }
