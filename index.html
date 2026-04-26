@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Для Роси 💫</title>
-    <!-- Фавиконка (роза) -->
+    <!-- Иконка сайта (роза) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
@@ -88,17 +88,8 @@
             transform: none;
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
-        .secondary-btn {
-            background: transparent; color: #a67c52;
-            border: 2px solid #a67c52; box-shadow: none;
-            font-size: 14px; padding: 12px 24px;
-            position: relative;
-        }
-        .secondary-btn:hover {
-            background: rgba(166, 124, 82, 0.1);
-            box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
-        }
-        /* Кнопка Отклонить — всегда абсолютная, плавная, не меняет размер */
+
+        /* Кнопка Отклонить — абсолютное позиционирование, плавное убегание */
         #declineBtn {
             position: absolute;
             bottom: 40px;
@@ -111,12 +102,19 @@
             white-space: nowrap;
             padding: 12px 24px;
             margin: 0;
-            /* убираем возможное изменение размера при ховере */
             box-sizing: border-box;
+            background: transparent;
+            color: #a67c52;
+            border: 2px solid #a67c52;
+            box-shadow: none;
+            font-size: 14px;
         }
         #declineBtn:hover {
-            transform: translateX(-50%); /* оставляем центрирование, но без scale */
+            background: rgba(166, 124, 82, 0.1);
+            box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
+            transform: translateX(-50%); /* без scale */
         }
+
         .loading-dots {
             display: flex; justify-content: center; gap: 8px; margin: 15px 0;
         }
@@ -143,11 +141,10 @@
             font-size: 24px; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
             display: flex; align-items: center; justify-content: center;
-            order: 1; /* кнопка всегда первая */
+            order: 1;
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
 
-        /* Слайдер громкости – вертикальный, скрыт по умолчанию */
         .volume-slider {
             -webkit-appearance: slider-vertical;
             width: 20px;
@@ -156,7 +153,7 @@
             border-radius: 4px;
             outline: none;
             cursor: pointer;
-            display: none; /* изначально скрыт */
+            display: none;
             order: 2;
         }
         .volume-slider::-webkit-slider-thumb {
@@ -247,7 +244,7 @@
 <body>
     <div class="particles" id="particles"></div>
 
-    <!-- МУЗЫКА: кнопка + вертикальный ползунок -->
+    <!-- Музыка: кнопка + вертикальный ползунок -->
     <div class="music-controls">
         <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
@@ -269,9 +266,9 @@
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
         <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося Сеьнко</span>.</p>
+        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
         <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-        <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии. Требуется срочное вмешательство! 🚨</p>
+        <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство. 🚨</p>
         <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
 
@@ -287,10 +284,10 @@
             Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
         </p>
         <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
-        <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
+        <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА (5 вариантов) -->
+    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
@@ -432,7 +429,7 @@
             }, 400);
         }
 
-        // ======== 3. УБЕГАЮЩАЯ КНОПКА ========
+        // ======== 3. УБЕГАЮЩАЯ КНОПКА (исправленная) ========
         const declineBtn = document.getElementById('declineBtn');
         if (declineBtn) {
             declineBtn.addEventListener('mouseenter', moveAway);
@@ -442,13 +439,14 @@
                 setTimeout(() => alert('🚫 Отказы не принимаются!'), 100);
             });
         }
+
         function moveAway() {
             const btn = document.getElementById('declineBtn');
             const container = btn.parentElement;
             const containerRect = container.getBoundingClientRect();
             const btnRect = btn.getBoundingClientRect();
 
-            // Доступные границы внутри контейнера (с учётом padding 35px 30px)
+            // Учитываем внутренние отступы (padding: 35px 30px)
             const paddingX = 30;
             const paddingY = 35;
             const maxX = containerRect.width - btnRect.width - paddingX * 2;
@@ -459,11 +457,12 @@
             const newX = Math.random() * maxX + minX;
             const newY = Math.random() * maxY + minY;
 
-            // Убираем центрирование и перемещаем плавно
+            // Убираем центрирование и плавно перемещаем
             btn.style.transform = 'none';
             btn.style.left = newX + 'px';
             btn.style.top = newY + 'px';
         }
+
         function declineInvite() {
             moveAway();
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
@@ -630,25 +629,22 @@
             }
         }
 
-        // ======== МУЗЫКА (тихий автостарт + вертикальный ползунок + иконки) ========
+        // ======== МУЗЫКА ========
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
-        bgMusic.volume = 0.35; // тише по умолчанию
+        bgMusic.volume = 0.35;
         let musicPlaying = false;
         const musicBtn = document.getElementById('musicBtn');
         const volumeSlider = document.getElementById('volumeSlider');
 
-        // Показать/скрыть слайдер
         function updateVolumeSliderVisibility() {
             volumeSlider.style.display = musicPlaying ? 'block' : 'none';
         }
 
-        // Обработчик ползунка
         volumeSlider.addEventListener('input', function() {
             bgMusic.volume = parseFloat(this.value);
         });
 
-        // Автостарт
         async function tryAutoplay() {
             try {
                 await bgMusic.play();
@@ -665,7 +661,6 @@
         }
         tryAutoplay();
 
-        // Ручное переключение
         function toggleMusic() {
             if (musicPlaying) {
                 bgMusic.pause();
@@ -682,7 +677,6 @@
             updateVolumeSliderVisibility();
         }
 
-        // Если автостарт не сработал, включится при первом клике
         document.addEventListener('click', function initAudioOnce() {
             if (!musicPlaying) {
                 bgMusic.play().then(() => {
