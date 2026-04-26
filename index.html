@@ -88,24 +88,13 @@
             transform: none;
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
-
-        /* Кнопка Отклонить – фиксированный размер, абсолютное позиционирование */
-        #declineBtn {
-            position: absolute;
-            z-index: 10;
-            width: 200px;
-            padding: 12px 0;
-            margin: 0;
-            box-sizing: border-box;
-            background: transparent;
-            color: #a67c52;
-            border: 2px solid #a67c52;
-            box-shadow: none;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: left 0.3s ease, top 0.3s ease;
+        .secondary-btn {
+            background: transparent; color: #a67c52;
+            border: 2px solid #a67c52; box-shadow: none;
+            font-size: 14px; padding: 12px 24px;
+            position: relative;
         }
-        #declineBtn:hover {
+        .secondary-btn:hover {
             background: rgba(166, 124, 82, 0.1);
             box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
         }
@@ -273,13 +262,13 @@
         <h2>Протокол счастья</h2>
         <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ ГИФКУ -->
         <img class="cat-sticker" 
-             src="КОТИК_ГИФКА" 
+             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
              alt="Милый котик" onerror="this.style.display='none'">
         <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
             Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
         </p>
         <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
-        <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
+        <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
     <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
@@ -341,7 +330,7 @@
         // =================================================================
         // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
         // =================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...твой_url.../exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
         // =================================================================
 
         // Глобальные переменные
@@ -421,53 +410,29 @@
                     next.style.opacity = '1';
                     next.style.transform = 'translateY(0)';
                 });
-
-                // Сброс кнопки «Отклонить» в центр при показе экрана 3
-                if (to === 'screen3') {
-                    const btn = document.getElementById('declineBtn');
-                    const container = document.getElementById('screen3');
-                    const containerRect = container.getBoundingClientRect();
-                    // Центрируем по горизонтали, отступ снизу 40px
-                    btn.style.left = (containerRect.width / 2 - 100) + 'px'; // 200px / 2
-                    btn.style.top = (containerRect.height - 40 - btn.offsetHeight) + 'px'; // 40px от нижнего края
-                    btn.style.transition = 'none'; // Убираем анимацию при сбросе
-                    setTimeout(() => { btn.style.transition = 'left 0.3s ease, top 0.3s ease'; }, 50);
-                }
             }, 400);
         }
 
-        // ======== 4. УБЕГАЮЩАЯ КНОПКА ========
+        // ======== 4. УБЕГАЮЩАЯ КНОПКА (исходная версия) ========
         const declineBtn = document.getElementById('declineBtn');
         if (declineBtn) {
-            declineBtn.addEventListener('mouseenter', moveAway);
+            declineBtn.addEventListener('mouseenter', function(e) {
+                moveAway();
+            });
             declineBtn.addEventListener('touchstart', function(e) {
                 e.preventDefault();
                 moveAway();
                 setTimeout(() => alert('🚫 Отказы не принимаются!'), 100);
             });
         }
-
         function moveAway() {
             const btn = document.getElementById('declineBtn');
             const container = btn.parentElement;
-            const containerRect = container.getBoundingClientRect();
-            const btnRect = btn.getBoundingClientRect();
-
-            // Учитываем отступы внутри контейнера (padding: 35px 30px)
-            const paddingX = 30;
-            const paddingY = 35;
-            const maxX = containerRect.width - btnRect.width - paddingX * 2;
-            const maxY = containerRect.height - btnRect.height - paddingY * 2;
-            const minX = paddingX;
-            const minY = paddingY;
-
-            const newX = Math.random() * maxX + minX;
-            const newY = Math.random() * maxY + minY;
-
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            // Просто меняем margin-left на случайное значение (старая логика)
+            const maxX = container.clientWidth - btn.clientWidth;
+            const randomX = Math.random() * maxX;
+            btn.style.marginLeft = randomX + 'px';
         }
-
         function declineInvite() {
             moveAway();
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
