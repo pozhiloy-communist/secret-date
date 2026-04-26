@@ -396,9 +396,11 @@
         function resetDeclineBtn() {
             if (!declineBtn) return;
             const container = document.getElementById('screen3');
-            const rect = container.getBoundingClientRect();
-            declineBtn.style.left = (rect.width/2 - 100) + 'px';
-            declineBtn.style.top = (rect.height - 80) + 'px';
+            const btnHeight = declineBtn.offsetHeight;
+            // Отступ 20px от нижнего края контейнера
+            const top = container.clientHeight - btnHeight - 20;
+            declineBtn.style.left = (container.clientWidth / 2 - 100) + 'px'; // центрируем (ширина кнопки 200px)
+            declineBtn.style.top = top + 'px';
             declineBtn.style.transition = 'none';
             setTimeout(() => declineBtn.style.transition = 'left 0.3s ease, top 0.3s ease', 50);
         }
