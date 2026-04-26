@@ -230,7 +230,7 @@
 
     <!-- МУЗЫКА: кнопка + вертикальный ползунок -->
     <div class="music-controls">
-        <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
+        <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🔇</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
@@ -242,7 +242,7 @@
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
         <p id="analysisPhrase" style="color: #8b6f5e; min-height: 24px;">Инициализация тёплых чувств...</p>
-        <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Продолжить →</button>
+        <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Подробнее</button>
     </div>
 
     <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
@@ -250,10 +250,10 @@
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
         <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
+        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося Сеьнко</span>.</p>
         <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-        <p>Единственный выход — провести время вместе.</p>
-        <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
+        <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство! 🚨</p>
+        <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
 
     <!-- ЭКРАН 3: ПРОТОКОЛ СЧАСТЬЯ -->
@@ -571,7 +571,7 @@
             const timeStr = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
             
             const payload = {
-                name: 'Рося',
+                name: 'Рося Сеьнко',
                 variant: optionText,
                 date: dateStr,
                 time: timeStr
@@ -598,10 +598,10 @@
             }
         }
 
-        // ======== МУЗЫКА (тихий автостарт + вертикальный ползунок + иконки) ========
+        // ======== МУЗЫКА (исправленное ручное управление, без автостарта) ========
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
-        bgMusic.volume = 0.35; // тише по умолчанию
+        bgMusic.volume = 0.35;
         let musicPlaying = false;
         const musicBtn = document.getElementById('musicBtn');
         const volumeSlider = document.getElementById('volumeSlider');
@@ -616,51 +616,28 @@
             bgMusic.volume = parseFloat(this.value);
         });
 
-        // Автостарт
-        async function tryAutoplay() {
-            try {
-                await bgMusic.play();
-                musicPlaying = true;
-                musicBtn.textContent = '🎵';
-                musicBtn.style.opacity = '1';
-                updateVolumeSliderVisibility();
-            } catch (e) {
-                console.log('Автовоспроизведение заблокировано, ждём клика');
-                musicBtn.textContent = '🔇';
-                musicBtn.style.opacity = '0.7';
-                updateVolumeSliderVisibility();
-            }
-        }
-        tryAutoplay();
-
-        // Ручное переключение
+        // Только ручное переключение, без автостарта и дополнительных слушателей
         function toggleMusic() {
             if (musicPlaying) {
                 bgMusic.pause();
                 musicPlaying = false;
                 musicBtn.textContent = '🔇';
                 musicBtn.style.opacity = '0.7';
+                updateVolumeSliderVisibility();
             } else {
                 bgMusic.play().then(() => {
                     musicPlaying = true;
                     musicBtn.textContent = '🎵';
                     musicBtn.style.opacity = '1';
-                }).catch(() => {});
+                    updateVolumeSliderVisibility();
+                }).catch(() => {
+                    // Если браузер блокирует, ничего не меняем
+                });
             }
-            updateVolumeSliderVisibility();
         }
 
-        // Если автостарт не сработал, включится при первом клике
-        document.addEventListener('click', function initAudioOnce() {
-            if (!musicPlaying) {
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicBtn.textContent = '🎵';
-                    musicBtn.style.opacity = '1';
-                    updateVolumeSliderVisibility();
-                }).catch(e => console.log('Всё ещё ждём клика:', e));
-            }
-        }, { once: true });
+        // Никаких автозапусков и дополнительных кликов
+        // Просто объявляем toggleMusic глобально, она уже привязана к кнопке
 
         // Первый рендер календаря
         renderCalendar();
