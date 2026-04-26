@@ -7,6 +7,7 @@
     <!-- Иконка сайта (роза) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
+        /* ====== ГЛОБАЛЬНЫЕ СТИЛИ ====== */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,6 +19,7 @@
             align-items: center;
             overflow-x: hidden;
         }
+        /* ====== ЧАСТИЦЫ ====== */
         .particles {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
@@ -32,6 +34,7 @@
             90% { opacity: 0.5; }
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
+        /* ====== КОНТЕЙНЕРЫ ====== */
         .container {
             position: relative; z-index: 1;
             background: rgba(255, 248, 240, 0.9);
@@ -89,7 +92,7 @@
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
 
-        /* Кнопка «Отклонить» — абсолютное позиционирование, плавное перемещение */
+        /* ====== КНОПКА ОТКЛОНИТЬ ====== */
         #declineBtn {
             position: absolute;
             z-index: 10;
@@ -112,6 +115,7 @@
             transform: none !important;
         }
 
+        /* ====== ТОЧКИ ЗАГРУЗКИ ====== */
         .loading-dots {
             display: flex; justify-content: center; gap: 8px; margin: 15px 0;
         }
@@ -126,7 +130,7 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
-        /* Музыкальный блок */
+        /* ====== МУЗЫКАЛЬНЫЙ БЛОК ====== */
         .music-controls {
             position: fixed; bottom: 20px; right: 20px; z-index: 10;
             display: flex; flex-direction: row; align-items: center; gap: 8px;
@@ -141,7 +145,6 @@
             order: 1;
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
-
         .volume-slider {
             -webkit-appearance: slider-vertical;
             width: 20px;
@@ -169,6 +172,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
+        /* ====== ВЫБОР ВАРИАНТА ====== */
         .options-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 15px; margin: 20px 0;
@@ -196,6 +200,8 @@
             width: 80%;
             text-align: center;
         }
+
+        /* ====== КАЛЕНДАРЬ ====== */
         .calendar {
             background: #fff9f2;
             border-radius: 20px;
@@ -241,13 +247,13 @@
 <body>
     <div class="particles" id="particles"></div>
 
-    <!-- Музыка -->
+    <!-- ====== МУЗЫКАЛЬНЫЙ БЛОК ====== -->
     <div class="music-controls">
         <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🔇</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ -->
+    <!-- ЭКРАН 1: АНАЛИЗ НАСТРОЕНИЯ -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -257,6 +263,8 @@
         <p id="analysisPhrase" style="color: #8b6f5e; min-height: 24px;">Инициализация тёплых чувств...</p>
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Подробнее</button>
     </div>
+
+    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
@@ -266,15 +274,23 @@
         <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство! 🚨</p>
         <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
+
+    <!-- ЭКРАН 3: ЗАПУСК ПРОТОКОЛА «РАНДЕВУ» -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">🐱☕</div>
-        <h2>Протокол счастья</h2>
-        <!-- СЮДА ВСТАВЬ СВОЮ ГИФКУ -->
-        <img class="cat-sticker" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" alt="Милый котик" onerror="this.style.display='none'">
-        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.</p>
-        <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
+        <h2>Необходимо запустить протокол «Рандеву»</h2>
+        <!-- ⚠️ ЗАМЕНИТЬ: вставь сюда свою гифку -->
+        <img class="cat-sticker" 
+             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
+             alt="Милый котик" onerror="this.style.display='none'">
+        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
+            Перед запуском протокола необходимо уточнить несколько деталей.
+        </p>
+        <button onclick="nextScreen('screen3', 'screen4')">Уточнить детали →</button><br>
         <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
+
+    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА ВСТРЕЧИ -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
@@ -288,6 +304,8 @@
         <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
+
+    <!-- ЭКРАН 5: КАЛЕНДАРЬ И ВРЕМЯ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату и время</h2>
@@ -298,6 +316,8 @@
         </div>
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
+
+    <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
     <div id="screen6" class="container hidden">
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
@@ -305,6 +325,8 @@
         <button class="send-btn" onclick="sendForm()">Отправить согласие ✨</button>
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
+
+    <!-- ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Согласие отправлено!</h2>
@@ -314,14 +336,16 @@
     </div>
 
     <script>
-        // ⚠️ Замени на свой URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
+        // ================================================
+        // ⚠️ ЗАМЕНИТЬ: вставь свой URL Google Apps Script
+        // ================================================
+        const SCRIPT_URL = 'https://https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
 
         let selectedOption = null;
         let customText = '';
         let selectedDate = null;
 
-        // Частицы
+        /* ====== 1. ГЕНЕРАЦИЯ ЧАСТИЦ ====== */
         (() => {
             const pc = document.getElementById('particles');
             const em = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
@@ -337,7 +361,7 @@
             }
         })();
 
-        // Анализ
+        /* ====== 2. ТАЙМЕР АНАЛИЗА НА ПЕРВОМ ЭКРАНЕ ====== */
         const analysisPhrases = [
             "Инициализация тёплых чувств...",
             "Сканирование улыбки...",
@@ -375,7 +399,7 @@
             }
         }, 7000);
 
-        // Переходы экранов
+        /* ====== 3. ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ ====== */
         function nextScreen(from, to) {
             const cur = document.getElementById(from);
             const nxt = document.getElementById(to);
@@ -391,15 +415,15 @@
             }, 400);
         }
 
-        // Кнопка "Отклонить"
+        /* ====== 4. УБЕГАЮЩАЯ КНОПКА ОТКЛОНИТЬ ====== */
         const declineBtn = document.getElementById('declineBtn');
         function resetDeclineBtn() {
             if (!declineBtn) return;
             const container = document.getElementById('screen3');
             const btnHeight = declineBtn.offsetHeight;
-            // Отступ 20px от нижнего края контейнера
-            const top = container.clientHeight - btnHeight - 20;
-            declineBtn.style.left = (container.clientWidth / 2 - 100) + 'px'; // центрируем (ширина кнопки 200px)
+            // Отступ 35px от нижнего края, чтобы не наезжать на кнопку «Уточнить детали»
+            const top = container.clientHeight - btnHeight - 35;
+            declineBtn.style.left = (container.clientWidth / 2 - 100) + 'px';
             declineBtn.style.top = top + 'px';
             declineBtn.style.transition = 'none';
             setTimeout(() => declineBtn.style.transition = 'left 0.3s ease, top 0.3s ease', 50);
@@ -428,7 +452,7 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
-        // Выбор варианта
+        /* ====== 5. ВЫБОР ВАРИАНТА ДОСУГА ====== */
         window.selectOption = function(type, el) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
@@ -446,7 +470,7 @@
             else btn.disabled = true;
         }
 
-        // Календарь
+        /* ====== 6. КАЛЕНДАРЬ И ВРЕМЯ ====== */
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
@@ -481,7 +505,7 @@
             nextScreen('screen5','screen6');
         };
 
-        // Отправка
+        /* ====== 7. ОТПРАВКА В TELEGRAM ====== */
         window.sendForm = async () => {
             let opt = ''; switch(selectedOption) {
                 case 'coffee': opt='Кофе'; break; case 'cinema': opt='Кино'; break;
@@ -499,7 +523,7 @@
             } catch(e) { st.textContent = '❌ Сетевая ошибка.'; }
         };
 
-        // ========== МУЗЫКА (исправленная) ==========
+        /* ====== 8. МУЗЫКАЛЬНЫЙ ПЛЕЕР ====== */
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
         bgMusic.volume = 0.35;
@@ -518,13 +542,12 @@
                 volumeSlider.style.display = 'none';
             }
         }
-
         // Попытка автовоспроизведения
         bgMusic.play().then(() => {
             musicPlaying = true;
             updateMusicUI();
         }).catch(() => {
-            // Автозапуск запрещён, ждём первого клика
+            // Если запрещено — ждём первого клика
             musicPlaying = false;
             updateMusicUI();
             document.addEventListener('click', function startOnce() {
@@ -536,8 +559,6 @@
                 }
             }, { once: true });
         });
-
-        // Ручное переключение
         window.toggleMusic = function() {
             if (musicPlaying) {
                 bgMusic.pause();
@@ -550,13 +571,11 @@
                 }).catch(() => {});
             }
         };
-
-        // Ползунок громкости
         volumeSlider.addEventListener('input', () => {
             bgMusic.volume = parseFloat(volumeSlider.value);
         });
 
-        // Календарь при загрузке
+        // Первый рендер календаря
         renderCal();
     </script>
 </body>
