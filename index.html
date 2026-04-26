@@ -194,18 +194,18 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            max-width: 140px; /* ограничиваем, чтобы не растягивались */
+            max-width: 160px; /* ограничиваем, чтобы не растягивались */
         }
         .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
         .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
 
         /* Гифки внутри карточек */
         .cat-option-gif {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             object-fit: cover;
-        }
+        }            
 
         /* Секретный вариант */
         .secret-card {
@@ -467,7 +467,7 @@
             if (!declineBtn) return;
             const container = document.getElementById('screen3');
             const btnHeight = declineBtn.offsetHeight;
-            const top = container.clientHeight - btnHeight - 35;
+            const top = container.clientHeight - btnHeight - 15;
             declineBtn.style.left = (container.clientWidth / 2 - 100) + 'px';
             declineBtn.style.top = top + 'px';
             declineBtn.style.transition = 'none';
