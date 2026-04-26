@@ -184,7 +184,7 @@
             background: #fff9f2;
             border: 2px solid #d4a574;
             border-radius: 20px;
-            padding: 20px 10px;
+            padding: 10px 10px 15px; /* верхний отступ уменьшили, нижний увеличили */
             cursor: pointer;
             transition: 0.3s;
             font-weight: 600;
@@ -194,18 +194,19 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            max-width: 160px; /* ограничиваем, чтобы не растягивались */
+            max-width: 180px; /* чуть шире, чтобы гифка помещалась */
         }
         .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
         .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
 
-        /* Гифки внутри карточек */
+        /* Гифка теперь без обрезки, прямоугольная, занимает почти всю карточку */
         .cat-option-gif {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-        }            
+            width: 100%;
+            height: auto;
+            max-height: 120px; /* чтобы не слишком вытягивалась */
+            object-fit: contain; /* сохраняет пропорции, не обрезает */
+            border-radius: 12px; /* лёгкое скругление, но не круг */
+        }        
 
         /* Секретный вариант */
         .secret-card {
@@ -319,17 +320,17 @@
         <div class="options-grid">
             <!-- Вариант 1: Кофе -->
             <div class="option-card" onclick="selectOption('coffee', this)">
-                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTBzMWc3cndwMjU2MzI1cGFmYW9vc2RzdXRscDc5emhnNzNoYnNicCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3nbxypT20Ulmo/giphy.gif" alt="Котик с кофе" class="cat-option-gif">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2k5YmQ0cHlqemdmNDRiamhwOWFtbDgxdXdkYTZuZ3FqbHg1YjFreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KfYq6gFR5hOQ9nbCgO/giphy.gif" alt="Котик с кофе" class="cat-option-gif">
                 <span>☕ Кофе</span>
             </div>
             <!-- Вариант 2: Кино -->
             <div class="option-card" onclick="selectOption('cinema', this)">
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExM29mN3J5NTZpMml4dWlwMjB4djAxM3RocnJtenFqb2E2dm5lNGM0NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanR2MGxidHl3bDZ5OWlscG1yYXVjZGIwbWNuMGw4cWduZG5mMTUzMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif">
                 <span>🎬 Кино</span>
             </div>
             <!-- Вариант 3: Прогулка -->
             <div class="option-card" onclick="selectOption('walk', this)">
-                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG91anp3ZnM4YnVsN3B3OWZ0cmI1YTBqNmkwaDZhMjV6bnFvcml4dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/y5JpmRihRLCYE/giphy.gif" alt="Котик гуляет" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3k2NTFlOHN3bWtzZG1yNGRlb2Ztd24xdmZqcDRwZGZ0cXA3aDlsMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AHJKg5YlpiBgSOye7L/giphy.gif" alt="Котик гуляет" class="cat-option-gif">
                 <span>🚶 Прогулка</span>
             </div>
             <!-- Вариант 4: Ужин -->
