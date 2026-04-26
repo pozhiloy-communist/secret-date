@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Для Роси 💫</title>
-    <!-- Иконка сайта (роза) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
@@ -88,15 +87,31 @@
             transform: none;
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
-        .secondary-btn {
-            background: transparent; color: #a67c52;
-            border: 2px solid #a67c52; box-shadow: none;
-            font-size: 14px; padding: 12px 24px;
-            position: relative;
+
+        /* Кнопка «Отклонить» — абсолютное позиционирование, плавное перемещение */
+        #declineBtn {
+            position: absolute;
+            z-index: 10;
+            /* фиксированный размер */
+            width: 200px;
+            padding: 12px 0;
+            margin: 0;
+            box-sizing: border-box;
+            background: transparent;
+            color: #a67c52;
+            border: 2px solid #a67c52;
+            box-shadow: none;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: left 0.3s ease, top 0.3s ease;
+            /* убираем любые трансформации при наведении, чтобы размер не менялся */
+            transform: none !important;
         }
-        .secondary-btn:hover {
+        #declineBtn:hover {
             background: rgba(166, 124, 82, 0.1);
             box-shadow: 0 5px 15px rgba(166, 124, 82, 0.2);
+            /* без изменения размера и сдвига */
+            transform: none !important;
         }
 
         .loading-dots {
@@ -228,13 +243,13 @@
 <body>
     <div class="particles" id="particles"></div>
 
-    <!-- Музыка: кнопка + вертикальный ползунок -->
+    <!-- Музыка -->
     <div class="music-controls">
-        <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
+        <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🔇</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАН 1: АНАЛИЗ -->
+    <!-- ЭКРАН 1 -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -245,7 +260,7 @@
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Подробнее</button>
     </div>
 
-    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
+    <!-- ЭКРАН 2 -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
@@ -256,11 +271,10 @@
         <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
 
-    <!-- ЭКРАН 3: ПРОТОКОЛ СЧАСТЬЯ -->
+    <!-- ЭКРАН 3 -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">🐱☕</div>
         <h2>Протокол счастья</h2>
-        <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ ГИФКУ -->
         <img class="cat-sticker" 
              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
              alt="Милый котик" onerror="this.style.display='none'">
@@ -268,35 +282,24 @@
             Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
         </p>
         <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
-        <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
+        <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
+    <!-- ЭКРАНЫ 4-7 без изменений -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
         <div class="options-grid">
-            <div class="option-card" onclick="selectOption('coffee', this)">
-                <span style="font-size: 36px;">☕</span> Кофе
-            </div>
-            <div class="option-card" onclick="selectOption('cinema', this)">
-                <span style="font-size: 36px;">🎬</span> Кино
-            </div>
-            <div class="option-card" onclick="selectOption('dinner', this)">
-                <span style="font-size: 36px;">🍽️</span> Ужин
-            </div>
-            <div class="option-card" onclick="selectOption('games', this)">
-                <span style="font-size: 36px;">🎮</span> Игры
-            </div>
-            <div class="option-card" onclick="selectOption('custom', this)">
-                <span style="font-size: 36px;">✍️</span> Свой
-            </div>
+            <div class="option-card" onclick="selectOption('coffee', this)"><span style="font-size: 36px;">☕</span> Кофе</div>
+            <div class="option-card" onclick="selectOption('cinema', this)"><span style="font-size: 36px;">🎬</span> Кино</div>
+            <div class="option-card" onclick="selectOption('dinner', this)"><span style="font-size: 36px;">🍽️</span> Ужин</div>
+            <div class="option-card" onclick="selectOption('games', this)"><span style="font-size: 36px;">🎮</span> Игры</div>
+            <div class="option-card" onclick="selectOption('custom', this)"><span style="font-size: 36px;">✍️</span> Свой</div>
         </div>
         <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ + ВРЕМЯ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату и время</h2>
@@ -308,7 +311,6 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
 
-    <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
     <div id="screen6" class="container hidden">
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
@@ -317,7 +319,6 @@
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
 
-    <!-- ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Согласие отправлено!</h2>
@@ -327,339 +328,181 @@
     </div>
 
     <script>
-        // =================================================================
-        // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
-        // =================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
-        // =================================================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...твой_url.../exec';
 
-        // Глобальные переменные
         let selectedOption = null;
         let customText = '';
         let selectedDate = null;
 
-        // ======== 1. ПАРТИКЛЫ ========
+        // Частицы
         const particlesContainer = document.getElementById('particles');
         const emojis = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
-        const particleCount = 12;
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < 12; i++) {
             const p = document.createElement('span');
             p.className = 'particle';
             p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            p.style.left = (i / particleCount * 100 + (Math.random() * 5 - 2.5)) + '%';
+            p.style.left = (i / 12 * 100 + (Math.random() * 5 - 2.5)) + '%';
             p.style.animationDuration = (8 + Math.random() * 8) + 's';
             p.style.animationDelay = Math.random() * 6 + 's';
             p.style.fontSize = (16 + Math.random() * 18) + 'px';
             particlesContainer.appendChild(p);
         }
 
-        // ======== 2. СЦЕНАРИЙ АНАЛИЗА ========
-        const analysisPhrases = [
-            "Инициализация тёплых чувств...",
-            "Сканирование улыбки...",
-            "Измерение уровня радости...",
-            "Поиск скрытых эмоций...",
-            "Обработка позитивных сигналов...",
-            "Сводка данных..."
-        ];
-        const finalMessage = "⚠️ Анализ завершён. Обнаружен острый недостаток любви, радости и счастья.";
-        const analysisDuration = 7000;
-        let phraseIndex = 0;
+        // Анализ
+        const phrases = ["Инициализация тёплых чувств...", "Сканирование улыбки...", "Измерение уровня радости...", "Поиск скрытых эмоций...", "Обработка позитивных сигналов...", "Сводка данных..."];
+        const finalMsg = "⚠️ Анализ завершён. Обнаружен острый недостаток любви, радости и счастья.";
+        let idx = 0;
         const phraseEl = document.getElementById('analysisPhrase');
-        const continueBtn = document.getElementById('btnContinue');
-
-        const phraseInterval = setInterval(() => {
-            phraseIndex++;
-            if (phraseIndex < analysisPhrases.length) {
-                phraseEl.textContent = analysisPhrases[phraseIndex];
-            } else {
-                clearInterval(phraseInterval);
-                phraseEl.textContent = finalMessage;
+        const contBtn = document.getElementById('btnContinue');
+        const iv = setInterval(() => {
+            idx++;
+            if (idx < phrases.length) phraseEl.textContent = phrases[idx];
+            else {
+                clearInterval(iv);
+                phraseEl.textContent = finalMsg;
                 phraseEl.style.color = '#a67c52';
-                continueBtn.disabled = false;
-                continueBtn.style.opacity = '1';
+                contBtn.disabled = false;
+                contBtn.style.opacity = '1';
                 document.getElementById('analysisDots').style.display = 'none';
             }
-        }, Math.floor(analysisDuration / analysisPhrases.length));
+        }, 7000 / phrases.length);
+        setTimeout(() => { if (contBtn.disabled) { clearInterval(iv); phraseEl.textContent = finalMsg; phraseEl.style.color = '#a67c52'; contBtn.disabled = false; contBtn.style.opacity = '1'; document.getElementById('analysisDots').style.display = 'none'; } }, 7000);
 
-        setTimeout(() => {
-            if (continueBtn.disabled) {
-                clearInterval(phraseInterval);
-                phraseEl.textContent = finalMessage;
-                phraseEl.style.color = '#a67c52';
-                continueBtn.disabled = false;
-                continueBtn.style.opacity = '1';
-                document.getElementById('analysisDots').style.display = 'none';
-            }
-        }, analysisDuration);
-
-        // ======== 3. ПЕРЕХОДЫ ЭКРАНОВ ========
+        // Переходы
         function nextScreen(from, to) {
-            const curr = document.getElementById(from);
-            const next = document.getElementById(to);
-            curr.style.opacity = '0';
-            curr.style.transform = 'translateY(-20px)';
-            curr.style.transition = '0.5s ease';
+            const a = document.getElementById(from), b = document.getElementById(to);
+            a.style.opacity = '0'; a.style.transform = 'translateY(-20px)'; a.style.transition = '0.5s';
             setTimeout(() => {
-                curr.classList.add('hidden');
-                next.classList.remove('hidden');
-                next.style.opacity = '0';
-                next.style.transform = 'translateY(20px)';
-                requestAnimationFrame(() => {
-                    next.style.transition = '0.5s ease';
-                    next.style.opacity = '1';
-                    next.style.transform = 'translateY(0)';
-                });
+                a.classList.add('hidden');
+                b.classList.remove('hidden');
+                b.style.opacity = '0'; b.style.transform = 'translateY(20px)';
+                requestAnimationFrame(() => { b.style.transition = '0.5s'; b.style.opacity = '1'; b.style.transform = 'translateY(0)'; });
+                if (to === 'screen3') resetDeclineButton();
             }, 400);
         }
 
-        // ======== 4. УБЕГАЮЩАЯ КНОПКА (исходная версия) ========
+        // Кнопка Отклонить
         const declineBtn = document.getElementById('declineBtn');
-        if (declineBtn) {
-            declineBtn.addEventListener('mouseenter', function(e) {
-                moveAway();
-            });
-            declineBtn.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                moveAway();
-                setTimeout(() => alert('🚫 Отказы не принимаются!'), 100);
-            });
+        function resetDeclineButton() {
+            const container = document.getElementById('screen3');
+            const rect = container.getBoundingClientRect();
+            if (declineBtn) {
+                declineBtn.style.left = (rect.width / 2 - 100) + 'px';
+                declineBtn.style.top = (rect.height - 80) + 'px';
+                declineBtn.style.transition = 'none';
+                setTimeout(() => declineBtn.style.transition = 'left 0.3s ease, top 0.3s ease', 50);
+            }
         }
         function moveAway() {
-            const btn = document.getElementById('declineBtn');
+            const btn = declineBtn;
             const container = btn.parentElement;
-            // Просто меняем margin-left на случайное значение (старая логика)
-            const maxX = container.clientWidth - btn.clientWidth;
-            const randomX = Math.random() * maxX;
-            btn.style.marginLeft = randomX + 'px';
+            const cr = container.getBoundingClientRect();
+            const br = btn.getBoundingClientRect();
+            const padX = 30, padY = 35;
+            const maxX = cr.width - br.width - padX*2, maxY = cr.height - br.height - padY*2;
+            btn.style.left = (Math.random() * maxX + padX) + 'px';
+            btn.style.top = (Math.random() * maxY + padY) + 'px';
         }
-        function declineInvite() {
-            moveAway();
-            alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
+        if (declineBtn) {
+            declineBtn.addEventListener('mouseenter', moveAway);
+            declineBtn.addEventListener('touchstart', e => { e.preventDefault(); moveAway(); setTimeout(() => alert('🚫 Отказы не принимаются!'), 100); });
         }
+        window.declineInvite = function() { moveAway(); alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊'); };
 
-        // ======== 5. ВЫБОР ВАРИАНТА ========
-        function selectOption(type, element) {
+        // Выбор варианта
+        window.selectOption = function(type, el) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-            element.classList.add('selected');
+            el.classList.add('selected');
             selectedOption = type;
-            const customInput = document.getElementById('customInput');
-            if (type === 'custom') {
-                customInput.classList.remove('hidden');
-                customInput.focus();
-            } else {
-                customInput.classList.add('hidden');
-                customText = '';
-                customInput.value = '';
-            }
-            updateNextToCalendarBtn();
-        }
-        function updateCustom() {
-            customText = document.getElementById('customInput').value;
-            updateNextToCalendarBtn();
-        }
-        function updateNextToCalendarBtn() {
+            document.getElementById('customInput').classList.toggle('hidden', type !== 'custom');
+            if (type==='custom') document.getElementById('customInput').focus();
+            else { customText=''; document.getElementById('customInput').value=''; }
+            updateNextBtn();
+        };
+        window.updateCustom = function() { customText = document.getElementById('customInput').value; updateNextBtn(); };
+        function updateNextBtn() {
             const btn = document.getElementById('nextToCalendar');
-            if (selectedOption === 'custom') {
-                btn.disabled = (customText.trim() === '');
-            } else if (selectedOption) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
+            if (selectedOption === 'custom') btn.disabled = (customText.trim()==='');
+            else if (selectedOption) btn.disabled = false;
+            else btn.disabled = true;
         }
 
-        // ======== 6. КАЛЕНДАРЬ + ВРЕМЯ ========
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let pickedDate = null;
-
-        function renderCalendar() {
-            const container = document.getElementById('calendarWidget');
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-
-            let html = `
-                <div class="calendar-header">
-                    <button onclick="changeMonth(-1)">←</button>
-                    <span>${monthNames[currentMonth]} ${currentYear}</span>
-                    <button onclick="changeMonth(1)">→</button>
-                </div>
-                <div class="weekdays">
-                    <span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span>
-                </div>
-                <div class="days-grid">
-            `;
-            for (let i = 0; i < firstDay; i++) {
-                html += '<div class="day-cell empty"></div>';
-            }
-            for (let d = 1; d <= daysInMonth; d++) {
-                const date = new Date(currentYear, currentMonth, d);
+        // Календарь
+        let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
+        function renderCal() {
+            const cont = document.getElementById('calendarWidget');
+            const today = new Date(); today.setHours(0,0,0,0);
+            const fd = new Date(curYear, curMonth, 1).getDay();
+            const dim = new Date(curYear, curMonth+1, 0).getDate();
+            const mn = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+            let h = `<div class="calendar-header"><button onclick="changeMonth(-1)">←</button><span>${mn[curMonth]} ${curYear}</span><button onclick="changeMonth(1)">→</button></div><div class="weekdays"><span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span></div><div class="days-grid">`;
+            for (let i=0;i<fd;i++) h += '<div class="day-cell empty"></div>';
+            for (let d=1; d<=dim; d++) {
+                const date = new Date(curYear, curMonth, d);
                 let cls = 'day-cell';
-                if (pickedDate && date.toDateString() === pickedDate.toDateString()) cls += ' selected';
-                if (date < today) {
-                    cls += ' empty';
-                    html += `<div class="${cls}" style="color:#ccc;">${d}</div>`;
-                } else {
-                    html += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
-                }
+                if (pickedDay && date.toDateString()===pickedDay.toDateString()) cls += ' selected';
+                if (date < today) { cls += ' empty'; h += `<div class="${cls}" style="color:#ccc;">${d}</div>`; }
+                else h += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
             }
-            html += '</div>';
-            container.innerHTML = html;
+            h += '</div>'; cont.innerHTML = h;
         }
-
-        function changeMonth(delta) {
-            currentMonth += delta;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            pickedDate = null;
-            document.getElementById('confirmDateBtn').disabled = true;
-            renderCalendar();
-        }
-
-        function pickDay(day) {
-            pickedDate = new Date(currentYear, currentMonth, day);
-            document.getElementById('confirmDateBtn').disabled = false;
-            renderCalendar();
-        }
-
-        function goToCalendar() {
-            currentMonth = new Date().getMonth();
-            currentYear = new Date().getFullYear();
-            pickedDate = null;
-            document.getElementById('confirmDateBtn').disabled = true;
-            renderCalendar();
-            nextScreen('screen4', 'screen5');
-        }
-
-        function goToConfirm() {
-            if (!pickedDate) return;
-            const timeStr = document.getElementById('timeInput').value;
-            const [hours, minutes] = timeStr.split(':').map(Number);
-            const finalDate = new Date(pickedDate);
-            finalDate.setHours(hours, minutes, 0, 0);
-            selectedDate = finalDate;
-
-            let optionText = '';
-            switch (selectedOption) {
-                case 'coffee': optionText = '☕ Кофе'; break;
-                case 'cinema': optionText = '🎬 Кино'; break;
-                case 'dinner': optionText = '🍽️ Ужин'; break;
-                case 'games': optionText = '🎮 Игры'; break;
-                case 'custom': optionText = '✍️ ' + customText; break;
+        window.changeMonth = d => { curMonth+=d; if(curMonth<0){curMonth=11;curYear--;} if(curMonth>11){curMonth=0;curYear++;} pickedDay=null; document.getElementById('confirmDateBtn').disabled=true; renderCal(); };
+        window.pickDay = d => { pickedDay = new Date(curYear, curMonth, d); document.getElementById('confirmDateBtn').disabled=false; renderCal(); };
+        window.goToCalendar = () => { curMonth=new Date().getMonth(); curYear=new Date().getFullYear(); pickedDay=null; renderCal(); nextScreen('screen4','screen5'); };
+        window.goToConfirm = () => {
+            if (!pickedDay) return;
+            const time = document.getElementById('timeInput').value.split(':');
+            const dt = new Date(pickedDay); dt.setHours(+time[0], +time[1],0,0); selectedDate = dt;
+            let opt = ''; switch(selectedOption) {
+                case 'coffee': opt='☕ Кофе'; break; case 'cinema': opt='🎬 Кино'; break;
+                case 'dinner': opt='🍽️ Ужин'; break; case 'games': opt='🎮 Игры'; break;
+                case 'custom': opt='✍️ '+customText; break;
             }
-            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
-            const timeStrFormatted = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
-            document.getElementById('summary').innerHTML = 
-                `<strong>Вариант:</strong> ${optionText}<br><strong>Дата:</strong> ${dateStr}<br><strong>Время:</strong> ${timeStrFormatted}`;
-            nextScreen('screen5', 'screen6');
-        }
+            document.getElementById('summary').innerHTML = `<strong>Вариант:</strong> ${opt}<br><strong>Дата:</strong> ${dt.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}<br><strong>Время:</strong> ${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
+            nextScreen('screen5','screen6');
+        };
 
-        // ======== 7. ОТПРАВКА ========
-        async function sendForm() {
-            let optionText = '';
-            switch (selectedOption) {
-                case 'coffee': optionText = 'Кофе'; break;
-                case 'cinema': optionText = 'Кино'; break;
-                case 'dinner': optionText = 'Ужин'; break;
-                case 'games': optionText = 'Игры'; break;
-                case 'custom': optionText = customText || '(свой вариант)'; break;
+        // Отправка
+        window.sendForm = async () => {
+            let opt = ''; switch(selectedOption) {
+                case 'coffee': opt='Кофе'; break; case 'cinema': opt='Кино'; break;
+                case 'dinner': opt='Ужин'; break; case 'games': opt='Игры'; break;
+                case 'custom': opt=customText||'(свой)'; break;
             }
-            const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
-            const timeStr = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
-            
-            const payload = {
-                name: 'Рося Сеьнко',
-                variant: optionText,
-                date: dateStr,
-                time: timeStr
-            };
-            
-            const statusEl = document.getElementById('sendStatus');
-            statusEl.textContent = 'Отправляю...';
-            
+            const ds = selectedDate.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+            const ts = selectedDate.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+            const st = document.getElementById('sendStatus'); st.textContent = 'Отправляю...';
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                if (result.ok) {
-                    statusEl.textContent = '✅ Отправлено!';
-                    nextScreen('screen6', 'screen7');
-                } else {
-                    statusEl.textContent = '❌ Ошибка сервера. Попробуй ещё раз.';
-                }
-            } catch (err) {
-                statusEl.textContent = '❌ Сетевая ошибка.';
-                console.error(err);
-            }
-        }
+                const r = await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify({name:'Рося Сеьнко',variant:opt,date:ds,time:ts})});
+                const j = await r.json();
+                st.textContent = j.ok ? '✅ Отправлено!' : '❌ Ошибка сервера.';
+                if (j.ok) nextScreen('screen6','screen7');
+            } catch(e) { st.textContent = '❌ Сетевая ошибка.'; }
+        };
 
-        // ======== МУЗЫКА ========
-        const bgMusic = new Audio('music.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.35;
-        let musicPlaying = false;
-        const musicBtn = document.getElementById('musicBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-
-        function updateVolumeSliderVisibility() {
-            volumeSlider.style.display = musicPlaying ? 'block' : 'none';
-        }
-
-        volumeSlider.addEventListener('input', function() {
-            bgMusic.volume = parseFloat(this.value);
-        });
-
-        async function tryAutoplay() {
-            try {
-                await bgMusic.play();
-                musicPlaying = true;
-                musicBtn.textContent = '🎵';
-                musicBtn.style.opacity = '1';
-                updateVolumeSliderVisibility();
-            } catch (e) {
-                console.log('Автовоспроизведение заблокировано, ждём клика');
-                musicBtn.textContent = '🔇';
-                musicBtn.style.opacity = '0.7';
-                updateVolumeSliderVisibility();
-            }
-        }
-        tryAutoplay();
-
-        function toggleMusic() {
-            if (musicPlaying) {
-                bgMusic.pause();
-                musicPlaying = false;
-                musicBtn.textContent = '🔇';
-                musicBtn.style.opacity = '0.7';
+        // Музыка (без автостарта, управление кнопкой)
+        const bg = new Audio('music.mp3'); bg.loop = true; bg.volume = 0.35;
+        let playing = false;
+        const mBtn = document.getElementById('musicBtn');
+        const vol = document.getElementById('volumeSlider');
+        vol.addEventListener('input', ()=> bg.volume = parseFloat(vol.value));
+        window.toggleMusic = () => {
+            if (playing) {
+                bg.pause();
+                playing = false;
+                mBtn.textContent = '🔇';
+                vol.style.display = 'none';
             } else {
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicBtn.textContent = '🎵';
-                    musicBtn.style.opacity = '1';
+                bg.play().then(() => {
+                    playing = true;
+                    mBtn.textContent = '🎵';
+                    vol.style.display = 'block';
                 }).catch(() => {});
             }
-            updateVolumeSliderVisibility();
-        }
+        };
 
-        document.addEventListener('click', function initAudioOnce() {
-            if (!musicPlaying) {
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicBtn.textContent = '🎵';
-                    musicBtn.style.opacity = '1';
-                    updateVolumeSliderVisibility();
-                }).catch(e => console.log('Всё ещё ждём клика:', e));
-            }
-        }, { once: true });
-
-        // Первый рендер календаря
-        renderCalendar();
+        // Сброс кнопки при первой загрузке (экран 3 изначально скрыт, но при переходе сработает resetDeclineButton)
+        renderCal();
     </script>
 </body>
 </html>
