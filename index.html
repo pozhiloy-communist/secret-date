@@ -172,10 +172,13 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* ====== ВЫБОР ВАРИАНТА ====== */
+        /* ====== ВЫБОР ВАРИАНТА (ЭКРАН 4) ====== */
         .options-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 15px; margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+            gap: 15px;
+            margin: 20px 0;
+            justify-items: center;
         }
         .option-card {
             background: #fff9f2;
@@ -186,19 +189,38 @@
             transition: 0.3s;
             font-weight: 600;
             color: #6b3a2a;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 140px; /* ограничиваем, чтобы не растягивались */
         }
         .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
         .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
-        #customInput {
-            margin-top: 10px;
-            padding: 12px;
-            border-radius: 25px;
-            border: 2px solid #d4a574;
-            font-family: 'Nunito', sans-serif;
-            font-size: 16px;
-            width: 80%;
-            text-align: center;
+
+        /* Гифки внутри карточек */
+        .cat-option-gif {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Секретный вариант */
+        .secret-card {
+            margin-top: 15px;
+        }
+        .secret-option {
+            display: inline-block;
+            border: 2px dashed #d4a574;
+            background: #fff9f2;
+            opacity: 0.8;
+            cursor: not-allowed;
+            padding: 15px 25px;
+            border-radius: 20px;
+            color: #a67c52;
+            font-weight: 600;
         }
 
         /* ====== КАЛЕНДАРЬ ====== */
@@ -295,13 +317,37 @@
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
         <div class="options-grid">
-            <div class="option-card" onclick="selectOption('coffee', this)"><span style="font-size: 36px;">☕</span> Кофе</div>
-            <div class="option-card" onclick="selectOption('cinema', this)"><span style="font-size: 36px;">🎬</span> Кино</div>
-            <div class="option-card" onclick="selectOption('dinner', this)"><span style="font-size: 36px;">🍽️</span> Ужин</div>
-            <div class="option-card" onclick="selectOption('games', this)"><span style="font-size: 36px;">🎮</span> Игры</div>
-            <div class="option-card" onclick="selectOption('custom', this)"><span style="font-size: 36px;">✍️</span> Свой</div>
+            <!-- Вариант 1: Кофе -->
+            <div class="option-card" onclick="selectOption('coffee', this)">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTBzMWc3cndwMjU2MzI1cGFmYW9vc2RzdXRscDc5emhnNzNoYnNicCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3nbxypT20Ulmo/giphy.gif" alt="Котик с кофе" class="cat-option-gif">
+                <span>☕ Кофе</span>
+            </div>
+            <!-- Вариант 2: Кино -->
+            <div class="option-card" onclick="selectOption('cinema', this)">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExM29mN3J5NTZpMml4dWlwMjB4djAxM3RocnJtenFqb2E2dm5lNGM0NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif">
+                <span>🎬 Кино</span>
+            </div>
+            <!-- Вариант 3: Прогулка -->
+            <div class="option-card" onclick="selectOption('walk', this)">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG91anp3ZnM4YnVsN3B3OWZ0cmI1YTBqNmkwaDZhMjV6bnFvcml4dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/y5JpmRihRLCYE/giphy.gif" alt="Котик гуляет" class="cat-option-gif">
+                <span>🚶 Прогулка</span>
+            </div>
+            <!-- Вариант 4: Ужин -->
+            <div class="option-card" onclick="selectOption('dinner', this)">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ0djZkcmx3a2pwdXJmemdjNWYxa3kyZmJwM3Y5dXBtZXlmZmE5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/80KtdO3WxQUOPa1yhf/giphy.gif" alt="Котик в ресторане" class="cat-option-gif">
+                <span>🍽️ Ужин</span>
+            </div>
         </div>
-        <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
+
+        <!-- Секретный вариант (пока не активен) -->
+        <div class="secret-card">
+            <div class="secret-option">
+                <span style="font-size: 36px;">🔒</span><br>
+                <span>*** secret ***</span>
+            </div>
+        </div>
+
+        <!-- Кнопка "Далее" активируется после выбора -->
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
@@ -339,10 +385,10 @@
         // ================================================
         // ⚠️ ЗАМЕНИТЬ: вставь свой URL Google Apps Script
         // ================================================
-        const SCRIPT_URL = 'https://https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
 
-        let selectedOption = null;
-        let customText = '';
+        /* ====== Глобальные переменные ====== */
+        let selectedOption = null;   // 'coffee', 'cinema', 'walk', 'dinner'
         let selectedDate = null;
 
         /* ====== 1. ГЕНЕРАЦИЯ ЧАСТИЦ ====== */
@@ -421,8 +467,7 @@
             if (!declineBtn) return;
             const container = document.getElementById('screen3');
             const btnHeight = declineBtn.offsetHeight;
-            // Отступ 35px от нижнего края, чтобы не наезжать на кнопку «Уточнить детали»
-            const top = container.clientHeight - btnHeight - 15;
+            const top = container.clientHeight - btnHeight - 35;
             declineBtn.style.left = (container.clientWidth / 2 - 100) + 'px';
             declineBtn.style.top = top + 'px';
             declineBtn.style.transition = 'none';
@@ -454,21 +499,14 @@
 
         /* ====== 5. ВЫБОР ВАРИАНТА ДОСУГА ====== */
         window.selectOption = function(type, el) {
+            // Убираем подсветку со всех карточек
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
             selectedOption = type;
-            const inp = document.getElementById('customInput');
-            if (type === 'custom') { inp.classList.remove('hidden'); inp.focus(); }
-            else { inp.classList.add('hidden'); customText = ''; inp.value = ''; }
-            updateNextBtn();
+            // Сразу активируем кнопку "Далее"
+            document.getElementById('nextToCalendar').disabled = false;
         };
-        window.updateCustom = function() { customText = document.getElementById('customInput').value; updateNextBtn(); };
-        function updateNextBtn() {
-            const btn = document.getElementById('nextToCalendar');
-            if (selectedOption === 'custom') btn.disabled = (customText.trim() === '');
-            else if (selectedOption) btn.disabled = false;
-            else btn.disabled = true;
-        }
+        // (Функция updateNextBtn и updateCustom больше не нужны, оставляем для совместимости пустыми)
 
         /* ====== 6. КАЛЕНДАРЬ И ВРЕМЯ ====== */
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
@@ -496,10 +534,13 @@
             if (!pickedDay) return;
             const time = document.getElementById('timeInput').value.split(':');
             const dt = new Date(pickedDay); dt.setHours(+time[0], +time[1],0,0); selectedDate = dt;
-            let opt = ''; switch(selectedOption) {
-                case 'coffee': opt='☕ Кофе'; break; case 'cinema': opt='🎬 Кино'; break;
-                case 'dinner': opt='🍽️ Ужин'; break; case 'games': opt='🎮 Игры'; break;
-                case 'custom': opt='✍️ '+customText; break;
+            let opt = ''; 
+            switch(selectedOption) {
+                case 'coffee': opt='☕ Кофе'; break;
+                case 'cinema': opt='🎬 Кино'; break;
+                case 'walk': opt='🚶 Прогулка'; break;
+                case 'dinner': opt='🍽️ Ужин'; break;
+                default: opt='?';
             }
             document.getElementById('summary').innerHTML = `<strong>Вариант:</strong> ${opt}<br><strong>Дата:</strong> ${dt.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}<br><strong>Время:</strong> ${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
             nextScreen('screen5','screen6');
@@ -507,10 +548,13 @@
 
         /* ====== 7. ОТПРАВКА В TELEGRAM ====== */
         window.sendForm = async () => {
-            let opt = ''; switch(selectedOption) {
-                case 'coffee': opt='Кофе'; break; case 'cinema': opt='Кино'; break;
-                case 'dinner': opt='Ужин'; break; case 'games': opt='Игры'; break;
-                case 'custom': opt=customText||'(свой)'; break;
+            let opt = ''; 
+            switch(selectedOption) {
+                case 'coffee': opt='Кофе'; break;
+                case 'cinema': opt='Кино'; break;
+                case 'walk': opt='Прогулка'; break;
+                case 'dinner': opt='Ужин'; break;
+                default: opt='Не выбрано';
             }
             const ds = selectedDate.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
             const ts = selectedDate.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
@@ -547,7 +591,6 @@
             musicPlaying = true;
             updateMusicUI();
         }).catch(() => {
-            // Если запрещено — ждём первого клика
             musicPlaying = false;
             updateMusicUI();
             document.addEventListener('click', function startOnce() {
