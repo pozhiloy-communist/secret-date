@@ -109,8 +109,13 @@
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
             40% { transform: scale(1); opacity: 1; }
         }
-        .music-toggle {
+
+        /* Музыкальный блок */
+        .music-controls {
             position: fixed; bottom: 20px; right: 20px; z-index: 10;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+        }
+        .music-toggle {
             background: rgba(255, 248, 240, 0.9);
             border: 2px solid #c4956a; color: #6b3a2a;
             width: 50px; height: 50px; border-radius: 50%;
@@ -119,6 +124,35 @@
             display: flex; align-items: center; justify-content: center;
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
+
+        /* Слайдер громкости */
+        .volume-slider {
+            writing-mode: vertical-lr;
+            direction: rtl; /* чтобы ползунок шёл снизу вверх */
+            height: 80px;
+            width: 4px;
+            -webkit-appearance: none;
+            background: #d4a574;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            background: #c4956a;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 16px; height: 16px;
+            background: #c4956a;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         .options-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 15px; margin: 20px 0;
@@ -190,7 +224,12 @@
 </head>
 <body>
     <div class="particles" id="particles"></div>
-    <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
+
+    <!-- МУЗЫКА: кнопка + ползунок -->
+    <div class="music-controls">
+        <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🎵</button>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
+    </div>
 
     <!-- ЭКРАН 1: АНАЛИЗ -->
     <div id="screen1" class="container">
@@ -294,7 +333,7 @@
         // Глобальные переменные
         let selectedOption = null;
         let customText = '';
-        let selectedDate = null; // теперь будет объект Date с временем
+        let selectedDate = null;
 
         // ======== 1. ПАРТИКЛЫ (равномерное распределение) ========
         const particlesContainer = document.getElementById('particles');
@@ -429,7 +468,7 @@
         // ======== 5. КАЛЕНДАРЬ + ВРЕМЯ ========
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-        let pickedDate = null; // день
+        let pickedDate = null;
 
         function renderCalendar() {
             const container = document.getElementById('calendarWidget');
@@ -494,8 +533,7 @@
 
         function goToConfirm() {
             if (!pickedDate) return;
-            // Добавляем время из input
-            const timeStr = document.getElementById('timeInput').value; // "HH:MM"
+            const timeStr = document.getElementById('timeInput').value;
             const [hours, minutes] = timeStr.split(':').map(Number);
             const finalDate = new Date(pickedDate);
             finalDate.setHours(hours, minutes, 0, 0);
@@ -557,46 +595,56 @@
             }
         }
 
-        // ======== МУЗЫКА (автостарт + исправленная кнопка) ========
+        // ======== МУЗЫКА (тихий автостарт + ползунок + иконки) ========
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true;
+        bgMusic.volume = 0.35; // тише по умолчанию
         let musicPlaying = false;
         const musicBtn = document.getElementById('musicBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
 
+        // Обработчик ползунка
+        volumeSlider.addEventListener('input', function() {
+            bgMusic.volume = this.value;
+        });
+
+        // Автостарт
         async function tryAutoplay() {
             try {
                 await bgMusic.play();
                 musicPlaying = true;
-                musicBtn.textContent = '🎶';
+                musicBtn.textContent = '🎵'; // играет — одна нота
                 musicBtn.style.opacity = '1';
             } catch (e) {
                 console.log('Автовоспроизведение заблокировано, ждём клика');
-                musicBtn.textContent = '🔇';
+                musicBtn.textContent = '🔇'; // выключен — перечёркнутый граммофон
                 musicBtn.style.opacity = '0.7';
             }
         }
         tryAutoplay();
 
+        // Ручное переключение
         function toggleMusic() {
             if (musicPlaying) {
                 bgMusic.pause();
                 musicPlaying = false;
-                musicBtn.textContent = '🎵';
+                musicBtn.textContent = '🔇';
                 musicBtn.style.opacity = '0.7';
             } else {
                 bgMusic.play().then(() => {
                     musicPlaying = true;
-                    musicBtn.textContent = '🎶';
+                    musicBtn.textContent = '🎵';
                     musicBtn.style.opacity = '1';
                 }).catch(() => {});
             }
         }
 
+        // Если автостарт не сработал, включится при первом клике
         document.addEventListener('click', function initAudioOnce() {
             if (!musicPlaying) {
                 bgMusic.play().then(() => {
                     musicPlaying = true;
-                    musicBtn.textContent = '🎶';
+                    musicBtn.textContent = '🎵';
                     musicBtn.style.opacity = '1';
                 }).catch(e => console.log('Всё ещё ждём клика:', e));
             }
