@@ -120,7 +120,7 @@
         }
         .music-toggle:hover { transform: scale(1.1); background: #c4956a; color: #fff; }
         .options-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
+            display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 15px; margin: 20px 0;
         }
         .option-card {
@@ -177,6 +177,14 @@
         .day-cell:hover { background: #f0e0cc; }
         .day-cell.selected { background: #c4956a; color: white; font-weight: bold; }
         .day-cell.empty { cursor: default; }
+        .time-selector {
+            margin: 15px 0;
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+        }
+        .time-selector input {
+            padding: 10px; border-radius: 25px; border: 2px solid #d4a574;
+            font-family: 'Nunito', sans-serif; font-size: 16px; text-align: center;
+        }
         .send-btn { margin-top: 15px; }
     </style>
 </head>
@@ -195,62 +203,67 @@
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Продолжить →</button>
     </div>
 
-  <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
-<div id="screen2" class="container hidden">
-    <div class="big-emoji">🌌</div>
-    <h2>Неопознанное чувство</h2>
-    <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
-    <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
-    <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
-    <p>Единственный выход — провести время вместе.</p>
-    <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
-</div>
-
-   <!-- ЭКРАН 3: ПРОТОКОЛ СЧАСТЬЯ (обновлён) -->
-<div id="screen3" class="container hidden">
-    <div class="big-emoji">🐱☕</div>
-    <h2>Протокол счастья</h2>
-    <img class="cat-sticker" 
-         src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWY3bGQ0eHkzNnJzOWxmb3FwN3kxcHNhbnl6aGpmcGJzMWN6dGZ2biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aD2saLzM9m/200.gif" 
-         alt="Милый котик" onerror="this.style.display='none'">
-    <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
-        Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
-    </p>
-    <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
-    <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
-</div>
-
-   <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА (5 вариантов) -->
-<div id="screen4" class="container hidden">
-    <div class="big-emoji">✨</div>
-    <h2>Выбери вариант</h2>
-    <div class="options-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="option-card" onclick="selectOption('coffee', this)">
-            <span style="font-size: 36px;">☕</span> Кофе
-        </div>
-        <div class="option-card" onclick="selectOption('cinema', this)">
-            <span style="font-size: 36px;">🎬</span> Кино
-        </div>
-        <div class="option-card" onclick="selectOption('park', this)">
-            <span style="font-size: 36px;">🌳</span> Парк
-        </div>
-        <div class="option-card" onclick="selectOption('walk', this)">
-            <span style="font-size: 36px;">🚶</span> Прогулка
-        </div>
-        <div class="option-card" onclick="selectOption('custom', this)">
-            <span style="font-size: 36px;">✍️</span> Свой
-        </div>
+    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
+    <div id="screen2" class="container hidden">
+        <div class="big-emoji">🌌</div>
+        <h2>Неопознанное чувство</h2>
+        <p>Анализ завершён. Результат не укладывается в стандартные алгоритмы.</p>
+        <p>Источник — <span style="color: #6b3a2a; font-weight: 700;">Рося</span>.</p>
+        <p>Характер чувства: <strong style="color: #c4956a;">тёплое, волнующее, требует немедленного внимания.</strong></p>
+        <p>Единственный выход — провести время вместе.</p>
+        <button onclick="nextScreen('screen2', 'screen3')">Выбрать формат →</button>
     </div>
-    <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
-    <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
-</div>
 
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
+    <!-- ЭКРАН 3: ПРОТОКОЛ СЧАСТЬЯ -->
+    <div id="screen3" class="container hidden">
+        <div class="big-emoji">🐱☕</div>
+        <h2>Протокол счастья</h2>
+        <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ ГИФКУ -->
+        <img class="cat-sticker" 
+             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGtpaGdkcmhpOGM3ZDBudmIyc3Q1YnpjZXB4djR5aHJyYWhmNzNwOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
+             alt="Милый котик" onerror="this.style.display='none'">
+        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
+            Решение принято! Осталось выбрать <span style="color: #c4956a;">формат встречи</span>.
+        </p>
+        <button onclick="nextScreen('screen3', 'screen4')">Выбрать формат 💫</button><br>
+        <button class="secondary-btn" id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
+    </div>
+
+    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА (5 вариантов) -->
+    <div id="screen4" class="container hidden">
+        <div class="big-emoji">✨</div>
+        <h2>Выбери вариант</h2>
+        <div class="options-grid">
+            <div class="option-card" onclick="selectOption('coffee', this)">
+                <span style="font-size: 36px;">☕</span> Кофе
+            </div>
+            <div class="option-card" onclick="selectOption('cinema', this)">
+                <span style="font-size: 36px;">🎬</span> Кино
+            </div>
+            <div class="option-card" onclick="selectOption('dinner', this)">
+                <span style="font-size: 36px;">🍽️</span> Ужин
+            </div>
+            <div class="option-card" onclick="selectOption('games', this)">
+                <span style="font-size: 36px;">🎮</span> Игры
+            </div>
+            <div class="option-card" onclick="selectOption('custom', this)">
+                <span style="font-size: 36px;">✍️</span> Свой
+            </div>
+        </div>
+        <input type="text" id="customInput" class="hidden" placeholder="Твой вариант..." oninput="updateCustom()">
+        <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
+    </div>
+
+    <!-- ЭКРАН 5: КАЛЕНДАРЬ + ВРЕМЯ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
-        <h2>Выбери дату</h2>
+        <h2>Выбери дату и время</h2>
         <div class="calendar" id="calendarWidget"></div>
-        <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить дату →</button>
+        <div class="time-selector">
+            <label for="timeInput" style="color:#6b3a2a; font-weight:600;">⏰ Время:</label>
+            <input type="time" id="timeInput" value="18:00">
+        </div>
+        <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
 
     <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
@@ -258,31 +271,30 @@
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
         <p id="summary"></p>
-        <button class="send-btn" onclick="sendForm()">Отправить приглашение ✨</button>
+        <button class="send-btn" onclick="sendForm()">Отправить согласие ✨</button>
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
 
     <!-- ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
-        <h2>Заявка отправлена!</h2>
-        <p>Твой выбор и дата уже у того самого<br>таинственного отправителя ✉️</p>
-        <p style="color: #8b6f5e;">Жди весточку в ближайшее время</p>
+        <h2>Согласие отправлено!</h2>
+        <p>Твой выбор уже у того самого<br>таинственного отправителя ✉️</p>
         <div class="big-emoji" style="font-size: 50px;">🐱☕✨</div>
-        <p style="font-size: 14px; color: #a67c52; margin-top: 20px;">До встречи, Рося! 💫</p>
+        <p style="font-size: 14px; color: #a67c52; margin-top: 20px;">До встречи, Росинка! 💫</p>
     </div>
 
     <script>
         // =================================================================
         // ВСТАВЬ СВОЙ URL ОТ GOOGLE APPS SCRIPT (прокси для Telegram)
         // =================================================================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/library/d/1PrebfO9R13LGEaL3qVXr7eWOWLQql73DcX02CcjilDiPQ9YCrbrpHZFh/1';
         // =================================================================
 
         // Глобальные переменные
         let selectedOption = null;
         let customText = '';
-        let selectedDate = null;
+        let selectedDate = null; // теперь будет объект Date с временем
 
         // ======== 1. ПАРТИКЛЫ (равномерное распределение) ========
         const particlesContainer = document.getElementById('particles');
@@ -414,10 +426,10 @@
             }
         }
 
-        // ======== 5. КАЛЕНДАРЬ ========
+        // ======== 5. КАЛЕНДАРЬ + ВРЕМЯ ========
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-        let pickedDate = null;
+        let pickedDate = null; // день
 
         function renderCalendar() {
             const container = document.getElementById('calendarWidget');
@@ -482,18 +494,25 @@
 
         function goToConfirm() {
             if (!pickedDate) return;
-            selectedDate = pickedDate;
+            // Добавляем время из input
+            const timeStr = document.getElementById('timeInput').value; // "HH:MM"
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const finalDate = new Date(pickedDate);
+            finalDate.setHours(hours, minutes, 0, 0);
+            selectedDate = finalDate;
+
             let optionText = '';
             switch (selectedOption) {
                 case 'coffee': optionText = '☕ Кофе'; break;
                 case 'cinema': optionText = '🎬 Кино'; break;
-                case 'park': optionText = '🌳 Парк'; break;
+                case 'dinner': optionText = '🍽️ Ужин'; break;
+                case 'games': optionText = '🎮 Игры'; break;
                 case 'custom': optionText = '✍️ ' + customText; break;
-                case 'walk': optionText = '🚶 Прогулка'; break;
             }
             const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            const timeStrFormatted = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
             document.getElementById('summary').innerHTML = 
-                `<strong>Вариант:</strong> ${optionText}<br><strong>Дата:</strong> ${dateStr}`;
+                `<strong>Вариант:</strong> ${optionText}<br><strong>Дата:</strong> ${dateStr}<br><strong>Время:</strong> ${timeStrFormatted}`;
             nextScreen('screen5', 'screen6');
         }
 
@@ -503,16 +522,18 @@
             switch (selectedOption) {
                 case 'coffee': optionText = 'Кофе'; break;
                 case 'cinema': optionText = 'Кино'; break;
-                case 'park': optionText = 'Парк'; break;
+                case 'dinner': optionText = 'Ужин'; break;
+                case 'games': optionText = 'Игры'; break;
                 case 'custom': optionText = customText || '(свой вариант)'; break;
-                case 'walk': optionText = 'Прогулка'; break;
             }
             const dateStr = selectedDate.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long' });
+            const timeStr = selectedDate.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
             
             const payload = {
                 name: 'Рося',
                 variant: optionText,
-                date: dateStr
+                date: dateStr,
+                time: timeStr
             };
             
             const statusEl = document.getElementById('sendStatus');
