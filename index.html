@@ -445,11 +445,24 @@
         function moveAway() {
             const btn = document.getElementById('declineBtn');
             const container = btn.parentElement;
-            const maxX = container.clientWidth - btn.clientWidth;
-            const maxY = container.clientHeight - btn.clientHeight;
-            btn.style.position = 'absolute';
-            btn.style.left = Math.random() * maxX + 'px';
-            btn.style.top = Math.random() * maxY + 'px';
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = btn.getBoundingClientRect();
+
+            // Доступные границы внутри контейнера (с учётом padding 35px 30px)
+            const paddingX = 30;
+            const paddingY = 35;
+            const maxX = containerRect.width - btnRect.width - paddingX * 2;
+            const maxY = containerRect.height - btnRect.height - paddingY * 2;
+            const minX = paddingX;
+            const minY = paddingY;
+
+            const newX = Math.random() * maxX + minX;
+            const newY = Math.random() * maxY + minY;
+
+            // Убираем центрирование и перемещаем плавно
+            btn.style.transform = 'none';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
         }
         function declineInvite() {
             moveAway();
