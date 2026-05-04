@@ -241,7 +241,6 @@
             height: 300px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            /* увеличенный зазор между фрагментами */
             gap: 6px;
             transition: gap 0.5s ease;
         }
@@ -250,10 +249,9 @@
             border: 2px solid transparent;
             cursor: pointer;
             position: absolute;
-            /* новый размер с учётом зазора */
             width: 96px;
             height: 96px;
-            transition: transform 0.3s ease, opacity 0.6s ease, width 0.5s ease, height 0.5s ease;
+            transition: transform 0.3s ease, opacity 0.6s ease;
             will-change: transform, opacity;
             box-sizing: border-box;
             border-radius: 6px;
@@ -262,10 +260,6 @@
             border-color: #a67c52;
             box-shadow: 0 0 0 3px #c4956a;
             z-index: 2;
-        }
-        /* После сборки убираем зазоры */
-        #puzzleContainer.solved {
-            gap: 0;
         }
         /* Растворение кусочков */
         .puzzle-piece.fade-out {
@@ -364,7 +358,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ 1-3 без изменений -->
+    <!-- ЭКРАНЫ 1-3 -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -600,7 +594,7 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С УВЕЛИЧЕННЫМ ЗАЗОРОМ И ПЛАВНОЙ СБОРКОЙ ======
+        // ====== 6. ПАЗЛ С ПЛАВНОЙ СБОРКОЙ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         const pieceSize = 96;            // 300 - (6*2) / 3 = 96
         const gapSize = 6;
@@ -696,34 +690,36 @@
                     document.getElementById('puzzleHint').classList.add('hidden');
                     const pc = document.getElementById('puzzleContainer');
                     const frame = document.getElementById('puzzleFrame');
-                    // Переводим фрагменты в статический поток сетки и запускаем плавное схлопывание
-                    puzzleElements.forEach(p => {
-                        p.style.position = 'static';
-                        p.style.width = '100%';
-                        p.style.height = '100%';
-                        p.style.transform = 'none';
-                        // transition уже задан в CSS
+                    
+                    // Плавно сдвигаем фрагменты к центру, убирая зазоры
+                    puzzleElements.forEach((p, i) => {
+                        const targetRow = Math.floor(i / puzzleSize);
+                        const targetCol = i % puzzleSize;
+                        p.style.transform = `translate(${targetCol * pieceSize}px, ${targetRow * pieceSize}px)`;
+                        // замедление не нужно, transition в CSS сработает
                     });
-                    pc.classList.add('solved'); // gap:0 за 0.5s
 
-                    // Через 2 секунды растворяем фрагменты и показываем поздравление
+                    // После завершения анимации стыковки (0.5s) показываем надпись
                     setTimeout(() => {
-                        puzzleElements.forEach(p => p.classList.add('fade-out'));
                         const congrats = document.getElementById('puzzleCongrats');
                         congrats.classList.add('show');
-                    }, 2500);
+                    }, 600);
 
-                    // Ещё через 1.5 секунды скрываем рамку и запускаем вопросы
+                    // Ещё через 2 секунды растворяем фрагменты и надпись
+                    setTimeout(() => {
+                        puzzleElements.forEach(p => p.classList.add('fade-out'));
+                        document.getElementById('puzzleCongrats').classList.remove('show');
+                    }, 2600);
+
+                    // После растворения скрываем рамку и запускаем викторину
                     setTimeout(() => {
                         frame.classList.add('hidden-frame');
-                        document.getElementById('puzzleCongrats').classList.remove('show');
-                        // После завершения перехода opacity окончательно убираем рамку из потока
                         setTimeout(() => {
                             frame.style.display = 'none';
                             document.getElementById('quizBlock').classList.remove('hidden');
                             showQuiz();
                         }, 500);
-                    }, 4000);
+                    }, 3200);
                 }
             }
         }
