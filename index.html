@@ -20,7 +20,7 @@
         .particles {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
-            overflow: hidden;  /* теперь частицы не раздвигают страницу */
+            overflow: hidden;
         }
         .particle {
             position: absolute;
@@ -168,7 +168,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* ====== ЭКРАН 4 ====== */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -202,7 +201,6 @@
             border-radius: 12px;
         }
 
-        /* Секретный вариант */
         .secret-card { margin-top: 15px; }
         .secret-option {
             display: inline-flex;
@@ -222,7 +220,6 @@
         }
         .secret-option:hover { background: #eadacb; }
 
-        /* Общая рамка пазла */
         #puzzleFrame {
             display: inline-block;
             border: 3px solid #c4956a;
@@ -240,8 +237,8 @@
         }
         #puzzleContainer {
             position: relative;
-            width: 320px;
-            height: 320px;
+            width: 312px;   /* 3*100 + 2*6 */
+            height: 312px;
         }
         .puzzle-piece {
             background-size: 300px 300px;
@@ -259,7 +256,6 @@
             z-index: 2;
         }
 
-        /* Поздравительная надпись */
         #puzzleCongrats {
             position: absolute;
             top: 50%;
@@ -355,7 +351,6 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ 1-3 -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -383,7 +378,6 @@
         <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
@@ -434,7 +428,6 @@
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату и время</h2>
@@ -446,7 +439,6 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
 
-    <!-- ЭКРАН 5b: СЕКРЕТНОЕ СООБЩЕНИЕ -->
     <div id="screen5_secret" class="container hidden">
         <div class="big-emoji">🎵💖</div>
         <h2>Отлично!</h2>
@@ -454,7 +446,6 @@
         <button onclick="goToConfirmSecret()">Далее →</button>
     </div>
 
-    <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
     <div id="screen6" class="container hidden">
         <div class="big-emoji">💌</div>
         <h2>Почти всё...</h2>
@@ -463,7 +454,6 @@
         <p id="sendStatus" style="font-size: 14px; margin-top: 10px; color: #a67c52;"></p>
     </div>
 
-    <!-- ЭКРАН 7: ФИНАЛ -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
         <h2>Согласие отправлено!</h2>
@@ -478,7 +468,6 @@
         let customText = '';
         let selectedDate = null;
 
-        // ====== 1. ЧАСТИЦЫ (стартуют из-за нижнего края) ======
         (() => {
             const pc = document.getElementById('particles');
             const em = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
@@ -487,7 +476,6 @@
                 s.className = 'particle';
                 s.textContent = em[Math.floor(Math.random() * em.length)];
                 s.style.left = (i / 12 * 100 + (Math.random() * 5 - 2.5)) + '%';
-                // позиционируем у нижней границы контейнера
                 s.style.top = '100%';
                 s.style.animationDuration = (8 + Math.random() * 8) + 's';
                 s.style.animationDelay = Math.random() * 6 + 's';
@@ -496,7 +484,6 @@
             }
         })();
 
-        // ====== 2. ТАЙМЕР АНАЛИЗА ======
         const analysisPhrases = [
             "Инициализация тёплых чувств...",
             "Сканирование улыбки...",
@@ -533,7 +520,6 @@
             }
         }, 7000);
 
-        // ====== 3. ПЕРЕХОДЫ ======
         function nextScreen(from, to) {
             const cur = document.getElementById(from);
             const nxt = document.getElementById(to);
@@ -549,7 +535,6 @@
             }, 400);
         }
 
-        // ====== 4. УБЕГАЮЩАЯ КНОПКА ======
         const declineBtn = document.getElementById('declineBtn');
         function resetDeclineBtn() {
             if (!declineBtn) return;
@@ -585,7 +570,6 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
-        // ====== 5. ОБЫЧНЫЙ ВЫБОР ======
         window.selectOption = function(type, el) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             if (el) el.classList.add('selected');
@@ -593,12 +577,11 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С УМЕНЬШЕННЫМИ ОТСТУПАМИ ======
-        const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
+        // ★★★ ПАРАМЕТРЫ ПАЗЛА ★★★
         const pieceSize = 100;
-        const puzzleGap = 10;
-        const step = pieceSize + puzzleGap;
-        const containerPadding = 10;
+        const gap = 6;                 // уменьшенный зазор
+        const step = pieceSize + gap;  // 106
+        const totalPieces = 9;         // 3x3
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
         let puzzleElements = [];
@@ -636,8 +619,8 @@
                 puzzleElements = [];
                 for (let i = 0; i < totalPieces; i++) {
                     const origIdx = puzzleState[i];
-                    const row = Math.floor(origIdx / puzzleSize);
-                    const col = origIdx % puzzleSize;
+                    const row = Math.floor(origIdx / 3);
+                    const col = origIdx % 3;
                     const piece = document.createElement('div');
                     piece.className = 'puzzle-piece';
                     piece.style.width = pieceSize + 'px';
@@ -645,8 +628,8 @@
                     piece.style.backgroundImage = `url('puzzle.jpg')`;
                     piece.style.backgroundSize = '300px 300px';
                     piece.style.backgroundPosition = `-${col*pieceSize}px -${row*pieceSize}px`;
-                    const targetRow = Math.floor(i / puzzleSize);
-                    const targetCol = i % puzzleSize;
+                    const targetRow = Math.floor(i / 3);
+                    const targetCol = i % 3;
                     piece.style.transform = `translate(${targetCol * step}px, ${targetRow * step}px)`;
                     piece.dataset.index = i;
                     piece.addEventListener('click', () => onPieceClick(i));
@@ -657,11 +640,11 @@
                 for (let i = 0; i < puzzleElements.length; i++) {
                     const piece = puzzleElements[i];
                     const origIdx = puzzleState[i];
-                    const row = Math.floor(origIdx / puzzleSize);
-                    const col = origIdx % puzzleSize;
+                    const row = Math.floor(origIdx / 3);
+                    const col = origIdx % 3;
                     piece.style.backgroundPosition = `-${col*pieceSize}px -${row*pieceSize}px`;
-                    const targetRow = Math.floor(i / puzzleSize);
-                    const targetCol = i % puzzleSize;
+                    const targetRow = Math.floor(i / 3);
+                    const targetCol = i % 3;
                     piece.style.transform = `translate(${targetCol * step}px, ${targetRow * step}px)`;
                 }
             }
@@ -689,14 +672,18 @@
                     const congrats = document.getElementById('puzzleCongrats');
                     const frame = document.getElementById('puzzleFrame');
 
+                    // подготовка к склейке
                     puzzleElements.forEach(p => {
                         p.style.transition = 'transform 0.5s ease, border-width 0.5s ease, opacity 0.6s ease';
                         p.style.borderWidth = '0px';
                     });
+
+                    // перемещаем каждый фрагмент на своё конечное место без зазоров
                     for (let i = 0; i < puzzleElements.length; i++) {
-                        const row = Math.floor(i / puzzleSize);
-                        const col = i % puzzleSize;
-                        puzzleElements[i].style.transform = `translate(${col * pieceSize + containerPadding}px, ${row * pieceSize + containerPadding}px)`;
+                        const row = Math.floor(i / 3);
+                        const col = i % 3;
+                        // важно: без учёта gap и без дополнительного padding – прямо в сетку 3×100
+                        puzzleElements[i].style.transform = `translate(${col * pieceSize}px, ${row * pieceSize}px)`;
                     }
 
                     setTimeout(() => {
@@ -723,7 +710,6 @@
 
         window.startSecretChallenge = () => initPuzzle();
 
-        // ====== 7. ВИКТОРИНА ======
         const quizData = [
             {
                 question: "Какая фраза здесь зашифрована: «АХАХАХАХВХАХПХАХАХ»?",
@@ -796,7 +782,6 @@
             }
         };
 
-        // ====== 8. СЕКРЕТНЫЕ ВЫБОРЫ ======
         window.updateCustomSecret = function() {
             const val = document.getElementById('customInputSecret').value.trim();
             if (val.length > 0) {
@@ -818,7 +803,6 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 9. КАЛЕНДАРЬ ======
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
@@ -869,7 +853,6 @@
             nextScreen('screen5_secret','screen6');
         };
 
-        // ====== 10. ОТПРАВКА ======
         window.sendForm = async () => {
             let opt = '';
             switch(selectedOption) {
@@ -897,7 +880,6 @@
             } catch(e) { st.textContent = '❌ Сетевая ошибка.'; }
         };
 
-        // ====== 11. МУЗЫКА ======
         const bgMusic = new Audio('music.mp3');
         bgMusic.loop = true; bgMusic.volume = 0.35;
         let musicPlaying = false;
