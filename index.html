@@ -229,7 +229,6 @@
             box-shadow: 0 5px 15px rgba(139, 90, 43, 0.15);
             margin: 15px auto;
             position: relative;
-            width: fit-content;
         }
         #puzzleContainer {
             position: relative;
@@ -238,6 +237,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
+            transition: gap 0.5s ease;
         }
         .puzzle-piece {
             background-size: 300px 300px;
@@ -253,6 +253,14 @@
         .puzzle-piece.selected {
             box-shadow: 0 0 0 3px #c4956a;
             z-index: 2;
+        }
+        /* После сборки убираем зазоры */
+        #puzzleContainer.solved {
+            gap: 0;
+        }
+        /* Растворение кусочков */
+        .puzzle-piece.fade-out {
+            opacity: 0;
         }
 
         /* Поздравительная надпись */
@@ -299,11 +307,6 @@
             color: #8b6f5e;
             font-size: 14px;
             margin-top: 8px;
-        }
-
-        /* Секретные результаты */
-        #secretReveal {
-            margin-top: 20px;
         }
 
         .calendar {
@@ -588,7 +591,7 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С ПЛАВНОЙ АНИМАЦИЕЙ И РАСТВОРЕНИЕМ ======
+        // ====== 6. ПАЗЛ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
@@ -613,7 +616,9 @@
             const congrats = document.getElementById('puzzleCongrats');
             congrats.classList.remove('show');
             congrats.style.opacity = '0';
-            document.getElementById('puzzleContainer').style.display = 'grid';
+            const pc = document.getElementById('puzzleContainer');
+            pc.classList.remove('solved');
+            pc.style.display = 'grid';
             document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
 
@@ -678,25 +683,31 @@
                     puzzleSolved = true;
                     document.getElementById('puzzleHint').classList.add('hidden');
                     const pc = document.getElementById('puzzleContainer');
+                    // Запускаем анимацию склеивания
                     setTimeout(() => {
+                        pc.classList.add('solved');
                         puzzleElements.forEach(p => {
                             p.style.position = 'static';
                             p.style.width = '100%';
                             p.style.height = '100%';
                             p.style.transform = 'none';
                         });
-                        pc.style.display = 'grid';
+                        // Ждём, пока склеивание завершится визуально (0.5s) + показ картинки (1s)
                         setTimeout(() => {
-                            puzzleElements.forEach(p => p.style.opacity = '0');
+                            // Растворяем кусочки
+                            puzzleElements.forEach(p => p.classList.add('fade-out'));
+                            // Показываем поздравление
                             const congrats = document.getElementById('puzzleCongrats');
                             congrats.classList.add('show');
+                            // Через 1.5 секунды убираем всё и запускаем вопросы
                             setTimeout(() => {
                                 pc.style.display = 'none';
+                                congrats.classList.remove('show');
                                 document.getElementById('quizBlock').classList.remove('hidden');
                                 showQuiz();
-                            }, 700);
-                        }, 400);
-                    }, 600);
+                            }, 1500);
+                        }, 1000);
+                    }, 300);
                 }
             }
         }
