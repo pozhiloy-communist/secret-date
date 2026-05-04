@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Для Роси 💫</title>
-    <!-- Иконка сайта (роза) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
@@ -227,16 +226,48 @@
             width: 300px;
             height: 300px;
             margin: 15px auto;
+            gap: 2px;
+            transition: gap 0.5s ease, filter 0.8s ease, opacity 0.8s ease;
         }
         .puzzle-piece {
             background-size: 300px 300px;
             border: 2px solid #fff;
             box-sizing: border-box;
             cursor: pointer;
-            transition: 0.1s;
+            transition: transform 0.25s ease, box-shadow 0.2s ease;
+            position: relative;
         }
         .puzzle-piece.selected {
             box-shadow: 0 0 0 3px #c4956a;
+        }
+        /* Склеенная картинка */
+        #puzzleContainer.complete {
+            gap: 0;
+        }
+        #puzzleContainer.complete .puzzle-piece {
+            cursor: default;
+            box-shadow: none;
+            border-color: transparent;
+        }
+        /* Засветление перед исчезновением */
+        #puzzleContainer.fade-out {
+            filter: brightness(2);
+            opacity: 0;
+        }
+
+        /* Поздравительная надпись */
+        #puzzleCongrats {
+            font-size: 28px;
+            font-weight: 700;
+            color: #6b3a2a;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            margin: 20px 0;
+        }
+        #puzzleCongrats.show {
+            opacity: 1;
+            transform: scale(1);
         }
 
         #quizBlock { margin-top: 15px; }
@@ -250,10 +281,12 @@
             text-align: center;
             width: 80%;
         }
+        /* Подсказки с рамкой с обеих сторон */
         .hint-text {
             display: inline-block;
             background: #f9f2e8;
             border-left: 4px solid #c4956a;
+            border-right: 4px solid #c4956a;
             padding: 6px 12px;
             border-radius: 10px;
             color: #8b6f5e;
@@ -279,10 +312,7 @@
         }
         .calendar-header span { font-weight: 700; color: #6b3a2a; }
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); color: #a67c52; margin-bottom: 5px; }
-        .days-grid {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .day-cell {
             aspect-ratio: 1;
             display: flex; align-items: center; justify-content: center;
@@ -332,7 +362,6 @@
     <div id="screen3" class="container hidden">
         <div class="big-emoji">🐱☕</div>
         <h2>Необходимо запустить протокол «Рандеву»</h2>
-        <!-- ⚠️ ЗАМЕНИТЬ: вставь сюда свою гифку -->
         <img class="cat-sticker" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" alt="Милый котик" onerror="this.style.display='none'">
         <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">Перед запуском протокола необходимо уточнить несколько деталей.</p>
         <button onclick="nextScreen('screen3', 'screen4')">Уточнить детали →</button><br>
@@ -349,15 +378,15 @@
                 <span>☕ Кофе</span>
             </div>
             <div class="option-card" onclick="selectOption('cinema', this)">
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanR2MGxidHl3bDZ5OWlscG1yYXVjZGIwbWNuMGw4cWduZG5mMTUzMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif" alt="Котик в кино" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanR2MGxidHl3bDZ5OWlscG1yYXVjZGIwbWNuMGw4cWduZG5mMTUzMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif">
                 <span>🎬 Кино</span>
             </div>
             <div class="option-card" onclick="selectOption('walk', this)">
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3k2NTFlOHN3bWtzZG1yNGRlb2Ztd24xdmZqcDRwZGZ0cXA3aDlsMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AHJKg5YlpiBgSOye7L/giphy.gif" alt="Котик гуляет" class="cat-option-gif" alt="Котик гуляет" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3k2NTFlOHN3bWtzZG1yNGRlb2Ztd24xdmZqcDRwZGZ0cXA3aDlsMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AHJKg5YlpiBgSOye7L/giphy.gif" alt="Котик гуляет" class="cat-option-gif">
                 <span>🚶 Прогулка</span>
             </div>
             <div class="option-card" onclick="selectOption('dinner', this)">
-                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ0djZkcmx3a2pwdXJmemdjNWYxa3kyZmJwM3Y5dXBtZXlmZmE5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/80KtdO3WxQUOPa1yhf/giphy.gif" alt="Котик в ресторане" class="cat-option-gif" alt="Котик в ресторане" class="cat-option-gif">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ0djZkcmx3a2pwdXJmemdjNWYxa3kyZmJwM3Y5dXBtZXlmZmE5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/80KtdO3WxQUOPa1yhf/giphy.gif" alt="Котик в ресторане" class="cat-option-gif">
                 <span>🍽️ Ужин</span>
             </div>
         </div>
@@ -373,7 +402,8 @@
         <!-- Скрытый контейнер для пазла и вопросов -->
         <div id="secretChallenge" class="hidden">
             <div id="puzzleContainer"></div>
-            <p style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
+            <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
+            <div id="puzzleCongrats">🧩 Ты умничка!</div>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden" style="margin-top:15px;">
                 <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer;">
@@ -390,7 +420,7 @@
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ (обычный) -->
+    <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату и время</h2>
@@ -402,7 +432,7 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
 
-    <!-- ЭКРАН 5b: СЕКРЕТНОЕ СООБЩЕНИЕ (только для концерта) -->
+    <!-- ЭКРАН 5b: СЕКРЕТНОЕ СООБЩЕНИЕ -->
     <div id="screen5_secret" class="container hidden">
         <div class="big-emoji">🎵💖</div>
         <h2>Отлично!</h2>
@@ -429,14 +459,11 @@
     </div>
 
     <script>
-        // ⚠️ ЗАМЕНИТЬ: вставь свой URL Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
-
         let selectedOption = null;
         let customText = '';
         let selectedDate = null;
-        // Секретный трек
-        let selectedSecretOption = null; // 'nalich' или 'custom_secret'
+        let selectedSecretOption = null;
 
         // ====== 1. ЧАСТИЦЫ ======
         (() => {
@@ -543,7 +570,7 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
-        // ====== 5. ВЫБОР ВАРИАНТА (обычные) ======
+        // ====== 5. ОБЫЧНЫЙ ВЫБОР ======
         window.selectOption = function(type, el) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             if (el) el.classList.add('selected');
@@ -555,6 +582,8 @@
         // ====== 6. ПАЗЛ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         let puzzleState = [], selectedPiece = -1;
+        let puzzleSolved = false;
+
         function initPuzzle() {
             puzzleState = Array.from({length: totalPieces}, (_, i) => i);
             for (let i = puzzleState.length-1; i>0; i--) {
@@ -562,11 +591,18 @@
                 [puzzleState[i], puzzleState[j]] = [puzzleState[j], puzzleState[i]];
             }
             selectedPiece = -1;
+            puzzleSolved = false;
             renderPuzzle();
             document.getElementById('secretChallenge').classList.remove('hidden');
             document.getElementById('secretLock').classList.add('hidden');
+            document.getElementById('puzzleHint').classList.remove('hidden');
+            document.getElementById('puzzleCongrats').classList.remove('show');
+            document.getElementById('quizBlock').classList.add('hidden');
+            document.getElementById('secretReveal').classList.add('hidden');
+            document.getElementById('puzzleContainer').classList.remove('complete', 'fade-out');
             document.getElementById('puzzleContainer').scrollIntoView({behavior:'smooth'});
         }
+
         function renderPuzzle() {
             const container = document.getElementById('puzzleContainer');
             container.innerHTML = '';
@@ -589,20 +625,41 @@
                 container.appendChild(piece);
             }
         }
+
         function onPieceClick(index) {
+            if (puzzleSolved) return;
             if (selectedPiece === -1) {
                 selectedPiece = index;
+                renderPuzzle();
+            } else if (selectedPiece === index) {
+                selectedPiece = -1;
                 renderPuzzle();
             } else {
                 [puzzleState[selectedPiece], puzzleState[index]] = [puzzleState[index], puzzleState[selectedPiece]];
                 selectedPiece = -1;
                 renderPuzzle();
                 if (puzzleState.every((v,i)=> v===i)) {
-                    document.getElementById('puzzleContainer').style.display = 'none';
-                    showQuiz();
+                    puzzleSolved = true;
+                    document.getElementById('puzzleHint').classList.add('hidden');
+                    setTimeout(() => {
+                        const pc = document.getElementById('puzzleContainer');
+                        pc.classList.add('complete');
+                        setTimeout(() => {
+                            pc.classList.add('fade-out');
+                            const congrats = document.getElementById('puzzleCongrats');
+                            congrats.classList.add('show');
+                            setTimeout(() => {
+                                congrats.classList.remove('show');
+                                pc.style.display = 'none';
+                                document.getElementById('quizBlock').classList.remove('hidden');
+                                showQuiz();
+                            }, 2000);
+                        }, 2000);
+                    }, 300);
                 }
             }
         }
+
         window.startSecretChallenge = () => initPuzzle();
 
         // ====== 7. ВИКТОРИНА ======
@@ -624,10 +681,13 @@
             }
         ];
         let currentQuestion = 0, wrongAttempts = 0;
+
         function showQuiz() {
             document.getElementById('quizBlock').classList.remove('hidden');
+            currentQuestion = 0;
             renderQuestion();
         }
+
         function renderQuestion() {
             if (currentQuestion >= quizData.length) {
                 document.getElementById('quizBlock').classList.add('hidden');
@@ -648,15 +708,14 @@
             `;
             document.getElementById('quizBlock').innerHTML = html;
             wrongAttempts = 0;
-            document.getElementById('hintArea').innerHTML = '';
         }
+
         window.checkAnswer = function() {
             const input = document.getElementById('quizAnswer');
             const userAnswer = input.value.trim().toLowerCase();
             const correctAnswers = quizData[currentQuestion].answer.map(a=>a.toLowerCase());
             if (correctAnswers.includes(userAnswer)) {
                 currentQuestion++;
-                document.getElementById('quizBlock').querySelector('.quiz-question').style.display = 'none';
                 renderQuestion();
             } else {
                 wrongAttempts++;
@@ -745,12 +804,12 @@
         window.sendForm = async () => {
             let opt = '';
             switch(selectedOption) {
-                case 'coffee': opt='Кофе'; break;
-                case 'cinema': opt='Кино'; break;
-                case 'walk': opt='Прогулка'; break;
-                case 'dinner': opt='Ужин'; break;
-                case 'nalich': opt='Концерт Петра Налича'; break;
-                case 'custom_secret': opt=customText||'(свой)'; break;
+                case 'coffee': opt='☕ Кофе'; break;
+                case 'cinema': opt='🎬 Кино'; break;
+                case 'walk': opt='🚶 Прогулка'; break;
+                case 'dinner': opt='🍽️ Ужин'; break;
+                case 'nalich': opt='🎵 Концерт Петра Налича'; break;
+                case 'custom_secret': opt='✍️ '+ (customText||'(свой)'); break;
             }
             let ds = '', ts = '';
             if (selectedOption === 'nalich') {
