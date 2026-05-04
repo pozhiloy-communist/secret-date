@@ -7,7 +7,6 @@
     <!-- Иконка сайта (роза) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
-        /* ====== ГЛОБАЛЬНЫЕ СТИЛИ ====== */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -19,7 +18,6 @@
             align-items: center;
             overflow-x: hidden;
         }
-        /* ====== ЧАСТИЦЫ ====== */
         .particles {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
@@ -34,7 +32,6 @@
             90% { opacity: 0.5; }
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
-        /* ====== КОНТЕЙНЕРЫ ====== */
         .container {
             position: relative; z-index: 1;
             background: rgba(255, 248, 240, 0.9);
@@ -92,7 +89,6 @@
             box-shadow: 0 4px 15px rgba(164, 116, 82, 0.2);
         }
 
-        /* ====== КНОПКА ОТКЛОНИТЬ ====== */
         #declineBtn {
             position: absolute;
             z-index: 10;
@@ -115,7 +111,6 @@
             transform: none !important;
         }
 
-        /* ====== ТОЧКИ ЗАГРУЗКИ ====== */
         .loading-dots {
             display: flex; justify-content: center; gap: 8px; margin: 15px 0;
         }
@@ -130,7 +125,6 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
-        /* ====== МУЗЫКАЛЬНЫЙ БЛОК ====== */
         .music-controls {
             position: fixed; bottom: 20px; right: 20px; z-index: 10;
             display: flex; flex-direction: row; align-items: center; gap: 8px;
@@ -172,10 +166,10 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* ====== ВЫБОР ВАРИАНТА (ЭКРАН 4) ====== */
+        /* ====== ЭКРАН 4 ====== */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin: 20px 0;
             justify-items: center;
@@ -184,7 +178,7 @@
             background: #fff9f2;
             border: 2px solid #d4a574;
             border-radius: 20px;
-            padding: 10px 10px 15px; /* верхний отступ уменьшили, нижний увеличили */
+            padding: 10px 10px 15px;
             cursor: pointer;
             transition: 0.3s;
             font-weight: 600;
@@ -194,37 +188,79 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            max-width: 180px; /* чуть шире, чтобы гифка помещалась */
+            max-width: 180px;
         }
         .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
         .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
-
-        /* Гифка теперь без обрезки, прямоугольная, занимает почти всю карточку */
         .cat-option-gif {
             width: 100%;
             height: auto;
-            max-height: 120px; /* чтобы не слишком вытягивалась */
-            object-fit: contain; /* сохраняет пропорции, не обрезает */
-            border-radius: 12px; /* лёгкое скругление, но не круг */
-        }        
+            max-height: 120px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
 
         /* Секретный вариант */
-        .secret-card {
-            margin-top: 15px;
-        }
+        .secret-card { margin-top: 15px; }
         .secret-option {
-            display: inline-block;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 160px;
+            height: 140px;
             border: 2px dashed #d4a574;
-            background: #fff9f2;
-            opacity: 0.8;
-            cursor: not-allowed;
-            padding: 15px 25px;
+            background: #f5ebe0;
             border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
             color: #a67c52;
             font-weight: 600;
+            font-size: 20px;
+        }
+        .secret-option:hover { background: #eadacb; }
+
+        /* Пазл */
+        #puzzleContainer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 300px;
+            height: 300px;
+            margin: 15px auto;
+        }
+        .puzzle-piece {
+            background-size: 300px 300px;
+            border: 2px solid #fff;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .puzzle-piece.selected {
+            box-shadow: 0 0 0 3px #c4956a;
         }
 
-        /* ====== КАЛЕНДАРЬ ====== */
+        #quizBlock { margin-top: 15px; }
+        .quiz-question { margin: 10px 0; }
+        .quiz-input {
+            padding: 10px;
+            border-radius: 25px;
+            border: 2px solid #d4a574;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            text-align: center;
+            width: 80%;
+        }
+        .hint-text {
+            display: inline-block;
+            background: #f9f2e8;
+            border-left: 4px solid #c4956a;
+            padding: 6px 12px;
+            border-radius: 10px;
+            color: #8b6f5e;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
         .calendar {
             background: #fff9f2;
             border-radius: 20px;
@@ -269,14 +305,12 @@
 </head>
 <body>
     <div class="particles" id="particles"></div>
-
-    <!-- ====== МУЗЫКАЛЬНЫЙ БЛОК ====== -->
     <div class="music-controls">
         <button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Вкл/Выкл музыку">🔇</button>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАН 1: АНАЛИЗ НАСТРОЕНИЯ -->
+    <!-- ЭКРАНЫ 1-3 (без изменений) -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -286,8 +320,6 @@
         <p id="analysisPhrase" style="color: #8b6f5e; min-height: 24px;">Инициализация тёплых чувств...</p>
         <button id="btnContinue" onclick="nextScreen('screen1', 'screen2')" disabled>Подробнее</button>
     </div>
-
-    <!-- ЭКРАН 2: НЕОПОЗНАННОЕ ЧУВСТВО -->
     <div id="screen2" class="container hidden">
         <div class="big-emoji">🌌</div>
         <h2>Неопознанное чувство</h2>
@@ -297,62 +329,68 @@
         <p style="color: #c06a4b; font-weight: 600;">🚨 Критический уровень симпатии! Требуется срочное вмешательство! 🚨</p>
         <button onclick="nextScreen('screen2', 'screen3')">Перейти к возможным решениям →</button>
     </div>
-
-    <!-- ЭКРАН 3: ЗАПУСК ПРОТОКОЛА «РАНДЕВУ» -->
     <div id="screen3" class="container hidden">
         <div class="big-emoji">🐱☕</div>
         <h2>Необходимо запустить протокол «Рандеву»</h2>
         <!-- ⚠️ ЗАМЕНИТЬ: вставь сюда свою гифку -->
-        <img class="cat-sticker" 
-             src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" 
-             alt="Милый котик" onerror="this.style.display='none'">
-        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">
-            Перед запуском протокола необходимо уточнить несколько деталей.
-        </p>
+        <img class="cat-sticker" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2YyMW5jOTI4cjFjNnZ3YjJlYnZ5YTdscnY1MW9lZW9nOWd2bzRuYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif" alt="Милый котик" onerror="this.style.display='none'">
+        <p style="font-size: 20px; font-weight: 600; color: #6b3a2a;">Перед запуском протокола необходимо уточнить несколько деталей.</p>
         <button onclick="nextScreen('screen3', 'screen4')">Уточнить детали →</button><br>
         <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА ВСТРЕЧИ -->
+    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
         <div class="options-grid">
-            <!-- Вариант 1: Кофе -->
             <div class="option-card" onclick="selectOption('coffee', this)">
                 <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2k5YmQ0cHlqemdmNDRiamhwOWFtbDgxdXdkYTZuZ3FqbHg1YjFreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KfYq6gFR5hOQ9nbCgO/giphy.gif" alt="Котик с кофе" class="cat-option-gif">
                 <span>☕ Кофе</span>
             </div>
-            <!-- Вариант 2: Кино -->
             <div class="option-card" onclick="selectOption('cinema', this)">
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanR2MGxidHl3bDZ5OWlscG1yYXVjZGIwbWNuMGw4cWduZG5mMTUzMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanR2MGxidHl3bDZ5OWlscG1yYXVjZGIwbWNuMGw4cWduZG5mMTUzMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4fDyJqlYYMkvK/giphy.gif" alt="Котик в кино" class="cat-option-gif" alt="Котик в кино" class="cat-option-gif">
                 <span>🎬 Кино</span>
             </div>
-            <!-- Вариант 3: Прогулка -->
             <div class="option-card" onclick="selectOption('walk', this)">
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3k2NTFlOHN3bWtzZG1yNGRlb2Ztd24xdmZqcDRwZGZ0cXA3aDlsMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AHJKg5YlpiBgSOye7L/giphy.gif" alt="Котик гуляет" class="cat-option-gif">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3k2NTFlOHN3bWtzZG1yNGRlb2Ztd24xdmZqcDRwZGZ0cXA3aDlsMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AHJKg5YlpiBgSOye7L/giphy.gif" alt="Котик гуляет" class="cat-option-gif" alt="Котик гуляет" class="cat-option-gif">
                 <span>🚶 Прогулка</span>
             </div>
-            <!-- Вариант 4: Ужин -->
             <div class="option-card" onclick="selectOption('dinner', this)">
-                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ0djZkcmx3a2pwdXJmemdjNWYxa3kyZmJwM3Y5dXBtZXlmZmE5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/80KtdO3WxQUOPa1yhf/giphy.gif" alt="Котик в ресторане" class="cat-option-gif">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ0djZkcmx3a2pwdXJmemdjNWYxa3kyZmJwM3Y5dXBtZXlmZmE5MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/80KtdO3WxQUOPa1yhf/giphy.gif" alt="Котик в ресторане" class="cat-option-gif" alt="Котик в ресторане" class="cat-option-gif">
                 <span>🍽️ Ужин</span>
             </div>
         </div>
 
-        <!-- Секретный вариант (пока не активен) -->
-        <div class="secret-card">
-            <div class="secret-option">
-                <span style="font-size: 36px;">🔒</span><br>
-                <span>*** secret ***</span>
+        <!-- Секретный вариант с замком -->
+        <div class="secret-card" id="secretLock">
+            <div class="secret-option" onclick="startSecretChallenge()">
+                <span style="font-size:48px;">🔒</span>
+                <span>🔒</span>
             </div>
         </div>
 
-        <!-- Кнопка "Далее" активируется после выбора -->
+        <!-- Скрытый контейнер для пазла и вопросов -->
+        <div id="secretChallenge" class="hidden">
+            <div id="puzzleContainer"></div>
+            <p style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
+            <div id="quizBlock" class="hidden"></div>
+            <div id="secretReveal" class="hidden" style="margin-top:15px;">
+                <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer;">
+                    <span style="font-size:36px;">🎵</span>
+                    <span>Концерт Петра Налича</span>
+                    <small style="color:#8b6f5e;">[Дата и город уточняются]</small>
+                </div>
+                <p style="margin-top:15px;">или предложи свой вариант:</p>
+                <input type="text" id="customInputSecret" class="quiz-input" placeholder="Твой вариант..." oninput="updateCustomSecret()">
+                <button id="btnCustomSecret" onclick="selectCustomSecret()" disabled>Выбрать свой</button>
+            </div>
+        </div>
+
         <button id="nextToCalendar" onclick="goToCalendar()" disabled>Далее →</button>
     </div>
 
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ И ВРЕМЯ -->
+    <!-- ЭКРАН 5: КАЛЕНДАРЬ (обычный) -->
     <div id="screen5" class="container hidden">
         <div class="big-emoji" style="font-size: 40px;">📅</div>
         <h2>Выбери дату и время</h2>
@@ -362,6 +400,14 @@
             <input type="time" id="timeInput" value="18:00">
         </div>
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
+    </div>
+
+    <!-- ЭКРАН 5b: СЕКРЕТНОЕ СООБЩЕНИЕ (только для концерта) -->
+    <div id="screen5_secret" class="container hidden">
+        <div class="big-emoji">🎵💖</div>
+        <h2>Отлично!</h2>
+        <p>Захвати с собой свою сияющую улыбку, всё остальное я организую. 😊</p>
+        <button onclick="goToConfirmSecret()">Далее →</button>
     </div>
 
     <!-- ЭКРАН 6: ПОДТВЕРЖДЕНИЕ -->
@@ -383,16 +429,16 @@
     </div>
 
     <script>
-        // ================================================
         // ⚠️ ЗАМЕНИТЬ: вставь свой URL Google Apps Script
-        // ================================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIjoDAS_nSAC-u9KbuYUFZv36_CiEL-52H0jZ1KuODmp63kw3ymelAdmg0exfeoNFsyg/exec';
 
-        /* ====== Глобальные переменные ====== */
-        let selectedOption = null;   // 'coffee', 'cinema', 'walk', 'dinner'
+        let selectedOption = null;
+        let customText = '';
         let selectedDate = null;
+        // Секретный трек
+        let selectedSecretOption = null; // 'nalich' или 'custom_secret'
 
-        /* ====== 1. ГЕНЕРАЦИЯ ЧАСТИЦ ====== */
+        // ====== 1. ЧАСТИЦЫ ======
         (() => {
             const pc = document.getElementById('particles');
             const em = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
@@ -408,7 +454,7 @@
             }
         })();
 
-        /* ====== 2. ТАЙМЕР АНАЛИЗА НА ПЕРВОМ ЭКРАНЕ ====== */
+        // ====== 2. ТАЙМЕР АНАЛИЗА ======
         const analysisPhrases = [
             "Инициализация тёплых чувств...",
             "Сканирование улыбки...",
@@ -424,9 +470,8 @@
         const dots = document.getElementById('analysisDots');
         const iv = setInterval(() => {
             phraseIdx++;
-            if (phraseIdx < analysisPhrases.length) {
-                phraseEl.textContent = analysisPhrases[phraseIdx];
-            } else {
+            if (phraseIdx < analysisPhrases.length) phraseEl.textContent = analysisPhrases[phraseIdx];
+            else {
                 clearInterval(iv);
                 phraseEl.textContent = finalMessage;
                 phraseEl.style.color = '#a67c52';
@@ -446,7 +491,7 @@
             }
         }, 7000);
 
-        /* ====== 3. ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ ====== */
+        // ====== 3. ПЕРЕХОДЫ ======
         function nextScreen(from, to) {
             const cur = document.getElementById(from);
             const nxt = document.getElementById(to);
@@ -462,7 +507,7 @@
             }, 400);
         }
 
-        /* ====== 4. УБЕГАЮЩАЯ КНОПКА ОТКЛОНИТЬ ====== */
+        // ====== 4. УБЕГАЮЩАЯ КНОПКА ======
         const declineBtn = document.getElementById('declineBtn');
         function resetDeclineBtn() {
             if (!declineBtn) return;
@@ -498,18 +543,156 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
-        /* ====== 5. ВЫБОР ВАРИАНТА ДОСУГА ====== */
+        // ====== 5. ВЫБОР ВАРИАНТА (обычные) ======
         window.selectOption = function(type, el) {
-            // Убираем подсветку со всех карточек
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
+            if (el) el.classList.add('selected');
             selectedOption = type;
-            // Сразу активируем кнопку "Далее"
+            selectedSecretOption = null;
             document.getElementById('nextToCalendar').disabled = false;
         };
-        // (Функция updateNextBtn и updateCustom больше не нужны, оставляем для совместимости пустыми)
 
-        /* ====== 6. КАЛЕНДАРЬ И ВРЕМЯ ====== */
+        // ====== 6. ПАЗЛ ======
+        const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
+        let puzzleState = [], selectedPiece = -1;
+        function initPuzzle() {
+            puzzleState = Array.from({length: totalPieces}, (_, i) => i);
+            for (let i = puzzleState.length-1; i>0; i--) {
+                const j = Math.floor(Math.random()*(i+1));
+                [puzzleState[i], puzzleState[j]] = [puzzleState[j], puzzleState[i]];
+            }
+            selectedPiece = -1;
+            renderPuzzle();
+            document.getElementById('secretChallenge').classList.remove('hidden');
+            document.getElementById('secretLock').classList.add('hidden');
+            document.getElementById('puzzleContainer').scrollIntoView({behavior:'smooth'});
+        }
+        function renderPuzzle() {
+            const container = document.getElementById('puzzleContainer');
+            container.innerHTML = '';
+            const pieceWidth = 300 / puzzleSize;
+            const pieceHeight = 300 / puzzleSize;
+            for (let i=0; i<totalPieces; i++) {
+                const origIdx = puzzleState[i];
+                const row = Math.floor(origIdx / puzzleSize);
+                const col = origIdx % puzzleSize;
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.style.width = pieceWidth + 'px';
+                piece.style.height = pieceHeight + 'px';
+                piece.style.backgroundImage = `url('puzzle.jpg')`;
+                piece.style.backgroundSize = '300px 300px';
+                piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
+                piece.dataset.index = i;
+                if (selectedPiece === i) piece.classList.add('selected');
+                piece.addEventListener('click', () => onPieceClick(i));
+                container.appendChild(piece);
+            }
+        }
+        function onPieceClick(index) {
+            if (selectedPiece === -1) {
+                selectedPiece = index;
+                renderPuzzle();
+            } else {
+                [puzzleState[selectedPiece], puzzleState[index]] = [puzzleState[index], puzzleState[selectedPiece]];
+                selectedPiece = -1;
+                renderPuzzle();
+                if (puzzleState.every((v,i)=> v===i)) {
+                    document.getElementById('puzzleContainer').style.display = 'none';
+                    showQuiz();
+                }
+            }
+        }
+        window.startSecretChallenge = () => initPuzzle();
+
+        // ====== 7. ВИКТОРИНА ======
+        const quizData = [
+            {
+                question: "Какая фраза здесь зашифрована: «АХАХАХАХВХАХПХАХАХ»?",
+                hints: ["💡 Подсказка: Фраза связана с радостью и торжеством.", "💡 Подсказка: Все говорят её в Пасху."],
+                answer: ["христос воскресе", "христос воскрес"]
+            },
+            {
+                question: "Столица Португалии?",
+                hints: ["💡 Подсказка: Рыжая в лесу бегает.", "💡 Подсказка: Рыжая в лесу бегает + синнабон."],
+                answer: ["лиссабон", "лиссабон"]
+            },
+            {
+                question: "Какое животное ты раньше чаще всего рисовала в разных обличиях?",
+                hints: ["💡 Подсказка: Ты встретила это животное, когда приехала к Пелагее (Северине) на ферму.", "💡 Подсказка: Белый, щипается, с красными лапками и клювом."],
+                answer: ["гусь", "гуся"]
+            }
+        ];
+        let currentQuestion = 0, wrongAttempts = 0;
+        function showQuiz() {
+            document.getElementById('quizBlock').classList.remove('hidden');
+            renderQuestion();
+        }
+        function renderQuestion() {
+            if (currentQuestion >= quizData.length) {
+                document.getElementById('quizBlock').classList.add('hidden');
+                document.getElementById('secretReveal').classList.remove('hidden');
+                document.getElementById('secretHisCard').classList.remove('selected');
+                document.getElementById('nextToCalendar').disabled = true;
+                return;
+            }
+            const q = quizData[currentQuestion];
+            const html = `
+                <div class="quiz-question">
+                    <p><strong>Вопрос ${currentQuestion+1}/${quizData.length}</strong></p>
+                    <p>${q.question}</p>
+                    <input type="text" id="quizAnswer" class="quiz-input" placeholder="Твой ответ">
+                    <div id="hintArea"></div>
+                    <button onclick="checkAnswer()">Ответить</button>
+                </div>
+            `;
+            document.getElementById('quizBlock').innerHTML = html;
+            wrongAttempts = 0;
+            document.getElementById('hintArea').innerHTML = '';
+        }
+        window.checkAnswer = function() {
+            const input = document.getElementById('quizAnswer');
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswers = quizData[currentQuestion].answer.map(a=>a.toLowerCase());
+            if (correctAnswers.includes(userAnswer)) {
+                currentQuestion++;
+                document.getElementById('quizBlock').querySelector('.quiz-question').style.display = 'none';
+                renderQuestion();
+            } else {
+                wrongAttempts++;
+                const hintArea = document.getElementById('hintArea');
+                if (wrongAttempts <= quizData[currentQuestion].hints.length) {
+                    hintArea.innerHTML += `<div class="hint-text">${quizData[currentQuestion].hints[wrongAttempts-1]}</div>`;
+                }
+                input.style.borderColor = '#c06a4b';
+                setTimeout(() => input.style.borderColor = '#d4a574', 800);
+                if (wrongAttempts > quizData[currentQuestion].hints.length) {
+                    alert('К сожалению, подсказки закончились. Попробуй ещё раз!');
+                }
+            }
+        };
+
+        // ====== 8. СЕКРЕТНЫЕ ВЫБОРЫ ======
+        window.updateCustomSecret = function() {
+            document.getElementById('btnCustomSecret').disabled = document.getElementById('customInputSecret').value.trim() === '';
+        };
+        window.selectSecretHis = function() {
+            document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('secretHisCard').classList.add('selected');
+            selectedOption = 'nalich';
+            selectedSecretOption = 'his';
+            document.getElementById('nextToCalendar').disabled = false;
+        };
+        window.selectCustomSecret = function() {
+            const val = document.getElementById('customInputSecret').value.trim();
+            if (!val) return;
+            customText = val;
+            selectedOption = 'custom_secret';
+            selectedSecretOption = 'custom';
+            document.getElementById('nextToCalendar').disabled = false;
+        };
+
+        // ====== 9. КАЛЕНДАРЬ ======
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
@@ -522,7 +705,7 @@
             for (let d=1; d<=dim; d++) {
                 const date = new Date(curYear, curMonth, d);
                 let cls = 'day-cell';
-                if (pickedDay && date.toDateString() === pickedDay.toDateString()) cls += ' selected';
+                if (pickedDay && date.toDateString()===pickedDay.toDateString()) cls += ' selected';
                 if (date < today) { cls += ' empty'; h += `<div class="${cls}" style="color:#ccc;">${d}</div>`; }
                 else h += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
             }
@@ -530,35 +713,53 @@
         }
         window.changeMonth = d => { curMonth+=d; if(curMonth<0){curMonth=11;curYear--;} if(curMonth>11){curMonth=0;curYear++;} pickedDay=null; document.getElementById('confirmDateBtn').disabled=true; renderCal(); };
         window.pickDay = d => { pickedDay = new Date(curYear, curMonth, d); document.getElementById('confirmDateBtn').disabled=false; renderCal(); };
-        window.goToCalendar = () => { curMonth=new Date().getMonth(); curYear=new Date().getFullYear(); pickedDay=null; renderCal(); nextScreen('screen4','screen5'); };
+        window.goToCalendar = function() {
+            if (selectedOption === 'nalich') {
+                nextScreen('screen4', 'screen5_secret');
+            } else {
+                curMonth = new Date().getMonth(); curYear = new Date().getFullYear(); pickedDay = null;
+                renderCal(); nextScreen('screen4', 'screen5');
+            }
+        };
         window.goToConfirm = () => {
             if (!pickedDay) return;
             const time = document.getElementById('timeInput').value.split(':');
             const dt = new Date(pickedDay); dt.setHours(+time[0], +time[1],0,0); selectedDate = dt;
-            let opt = ''; 
+            let opt = '';
             switch(selectedOption) {
                 case 'coffee': opt='☕ Кофе'; break;
                 case 'cinema': opt='🎬 Кино'; break;
                 case 'walk': opt='🚶 Прогулка'; break;
                 case 'dinner': opt='🍽️ Ужин'; break;
-                default: opt='?';
+                case 'custom_secret': opt='✍️ '+customText; break;
             }
             document.getElementById('summary').innerHTML = `<strong>Вариант:</strong> ${opt}<br><strong>Дата:</strong> ${dt.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}<br><strong>Время:</strong> ${dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
             nextScreen('screen5','screen6');
         };
+        window.goToConfirmSecret = () => {
+            document.getElementById('summary').innerHTML = '<strong>Вариант:</strong> 🎵 Концерт Петра Налича';
+            nextScreen('screen5_secret','screen6');
+        };
 
-        /* ====== 7. ОТПРАВКА В TELEGRAM ====== */
+        // ====== 10. ОТПРАВКА ======
         window.sendForm = async () => {
-            let opt = ''; 
+            let opt = '';
             switch(selectedOption) {
                 case 'coffee': opt='Кофе'; break;
                 case 'cinema': opt='Кино'; break;
                 case 'walk': opt='Прогулка'; break;
                 case 'dinner': opt='Ужин'; break;
-                default: opt='Не выбрано';
+                case 'nalich': opt='Концерт Петра Налича'; break;
+                case 'custom_secret': opt=customText||'(свой)'; break;
             }
-            const ds = selectedDate.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
-            const ts = selectedDate.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+            let ds = '', ts = '';
+            if (selectedOption === 'nalich') {
+                ds = 'Дата и город уточняются';
+                ts = 'Время уточняется';
+            } else {
+                ds = selectedDate.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+                ts = selectedDate.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+            }
             const st = document.getElementById('sendStatus'); st.textContent = 'Отправляю...';
             try {
                 const r = await fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify({name:'Рося Сеьнко',variant:opt,date:ds,time:ts})});
@@ -568,58 +769,33 @@
             } catch(e) { st.textContent = '❌ Сетевая ошибка.'; }
         };
 
-        /* ====== 8. МУЗЫКАЛЬНЫЙ ПЛЕЕР ====== */
+        // ====== 11. МУЗЫКА ======
         const bgMusic = new Audio('music.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.35;
+        bgMusic.loop = true; bgMusic.volume = 0.35;
         let musicPlaying = false;
         const musicBtn = document.getElementById('musicBtn');
         const volumeSlider = document.getElementById('volumeSlider');
-
         function updateMusicUI() {
             if (musicPlaying) {
-                musicBtn.textContent = '🎵';
-                musicBtn.style.opacity = '1';
+                musicBtn.textContent = '🎵'; musicBtn.style.opacity = '1';
                 volumeSlider.style.display = 'block';
             } else {
-                musicBtn.textContent = '🔇';
-                musicBtn.style.opacity = '0.7';
+                musicBtn.textContent = '🔇'; musicBtn.style.opacity = '0.7';
                 volumeSlider.style.display = 'none';
             }
         }
-        // Попытка автовоспроизведения
-        bgMusic.play().then(() => {
-            musicPlaying = true;
-            updateMusicUI();
-        }).catch(() => {
-            musicPlaying = false;
-            updateMusicUI();
+        bgMusic.play().then(() => { musicPlaying = true; updateMusicUI(); }).catch(() => {
+            musicPlaying = false; updateMusicUI();
             document.addEventListener('click', function startOnce() {
-                if (!musicPlaying) {
-                    bgMusic.play().then(() => {
-                        musicPlaying = true;
-                        updateMusicUI();
-                    }).catch(() => {});
-                }
+                if (!musicPlaying) bgMusic.play().then(() => { musicPlaying = true; updateMusicUI(); }).catch(()=>{});
             }, { once: true });
         });
-        window.toggleMusic = function() {
-            if (musicPlaying) {
-                bgMusic.pause();
-                musicPlaying = false;
-                updateMusicUI();
-            } else {
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    updateMusicUI();
-                }).catch(() => {});
-            }
+        window.toggleMusic = () => {
+            if (musicPlaying) { bgMusic.pause(); musicPlaying = false; updateMusicUI(); }
+            else { bgMusic.play().then(() => { musicPlaying = true; updateMusicUI(); }).catch(()=>{}); }
         };
-        volumeSlider.addEventListener('input', () => {
-            bgMusic.volume = parseFloat(volumeSlider.value);
-        });
+        volumeSlider.addEventListener('input', ()=> bgMusic.volume = parseFloat(volumeSlider.value));
 
-        // Первый рендер календаря
         renderCal();
     </script>
 </body>
