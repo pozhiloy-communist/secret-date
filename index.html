@@ -352,7 +352,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ 1-3 (без изменений) -->
+    <!-- ЭКРАНЫ 1-3 -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -619,6 +619,7 @@
             const pc = document.getElementById('puzzleContainer');
             const frame = document.getElementById('puzzleFrame');
             frame.classList.remove('hidden-frame');
+            frame.style.display = 'inline-block';
             frame.style.opacity = '1';
             pc.style.display = 'grid';
             document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
@@ -666,7 +667,6 @@
             if (puzzleSolved) return;
             if (selectedPiece === -1) {
                 selectedPiece = index;
-                // подсветка через класс
                 puzzleElements.forEach((p, i) => {
                     if (i === selectedPiece) p.classList.add('selected');
                     else p.classList.remove('selected');
@@ -682,53 +682,50 @@
                 if (puzzleState.every((v,i)=> v===i)) {
                     puzzleSolved = true;
                     document.getElementById('puzzleHint').classList.add('hidden');
+                    const congrats = document.getElementById('puzzleCongrats');
                     const frame = document.getElementById('puzzleFrame');
-                    const pc = document.getElementById('puzzleContainer');
-                    
-                    // Переводим все элементы в абсолютное позиционирование с текущими координатами
+
+                    // Настраиваем transition для плавного слияния к центру
                     puzzleElements.forEach(p => {
-                        p.style.position = 'absolute';
+                        p.style.transition = 'transform 0.5s ease, border-width 0.5s ease, opacity 0.6s ease';
+                        p.style.borderWidth = '0px';
                     });
-                    
-                    // Центральный индекс (1,1) в сетке 3x3
-                    const centerIndex = 4;
-                    const centerRow = 1, centerCol = 1;
-                    const pieceSize = 100;
-                    
-                    // Задаём transition для плавного движения
-                    puzzleElements.forEach(p => p.style.transition = 'transform 0.5s ease');
-                    
-                    // Сдвигаем все элементы к центру, оставляя центральный на месте
+
+                    // Сдвигаем крайние элементы внутрь, убирая бывшие зазоры от border (2px)
                     puzzleElements.forEach((p, i) => {
                         const row = Math.floor(i / puzzleSize);
                         const col = i % puzzleSize;
-                        const offsetX = (col - centerCol) * pieceSize;
-                        const offsetY = (row - centerRow) * pieceSize;
-                        p.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                        let newX = col * pieceSize;
+                        let newY = row * pieceSize;
+                        if (col === 0) newX += 2;
+                        else if (col === 2) newX -= 2;
+                        if (row === 0) newY += 2;
+                        else if (row === 2) newY -= 2;
+                        p.style.transform = `translate(${newX}px, ${newY}px)`;
                     });
-                    
-                    // Через 0.5 секунды, когда анимация завершится, показываем целую картинку
+
+                    // 0.5s анимация + 2s показать картинку → растворение
                     setTimeout(() => {
-                        // Убираем зазоры (уже слиплись), и делаем фон полностью видимым
-                        pc.style.gap = '0';
-                        // Ждём 2 секунды, затем растворяем
+                        puzzleElements.forEach(p => p.style.opacity = '0');
+                        // Дождаться конца растворения (0.6s), затем показать надпись
                         setTimeout(() => {
-                            puzzleElements.forEach(p => p.style.opacity = '0');
-                            // Показываем поздравление
-                            const congrats = document.getElementById('puzzleCongrats');
                             congrats.classList.add('show');
-                            // Через 1.5 секунды скрываем рамку и запускаем викторину
+                            congrats.style.opacity = '1';
+                            // Надпись видна ~1.5s
                             setTimeout(() => {
+                                congrats.style.opacity = '0';
+                                congrats.classList.remove('show');
                                 frame.classList.add('hidden-frame');
-                                document.getElementById('puzzleCongrats').classList.remove('show');
+                                frame.style.opacity = '0';
+                                // Ещё 0.5s и показать викторину
                                 setTimeout(() => {
                                     frame.style.display = 'none';
                                     document.getElementById('quizBlock').classList.remove('hidden');
                                     showQuiz();
                                 }, 500);
                             }, 1500);
-                        }, 2000);
-                    }, 500);
+                        }, 600);
+                    }, 2500);
                 }
             }
         }
@@ -793,7 +790,7 @@
                 currentQuestion++;
                 renderQuestion();
             } else {
-                input.value = ''; // Очищаем поле
+                input.value = '';
                 input.focus();
                 wrongAttempts++;
                 const hintArea = document.getElementById('hintArea');
@@ -825,7 +822,7 @@
             document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('secretHisCard').classList.add('selected');
             selectedOption = 'nalich';
-            document.getElementById('customInputSecret').value = ''; // очищаем поле "свой"
+            document.getElementById('customInputSecret').value = '';
             customText = '';
             document.getElementById('nextToCalendar').disabled = false;
         };
@@ -836,7 +833,7 @@
             const cont = document.getElementById('calendarWidget');
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            today.setDate(today.getDate() + 1); // Разрешаем только со следующего дня
+            today.setDate(today.getDate() + 1);
             const fd = new Date(curYear, curMonth, 1).getDay();
             const dim = new Date(curYear, curMonth+1, 0).getDate();
             const mn = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
