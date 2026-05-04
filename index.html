@@ -219,7 +219,7 @@
         }
         .secret-option:hover { background: #eadacb; }
 
-        /* Пазл */
+        /* Рамка пазла */
         #puzzleFrame {
             display: inline-block;
             border: 3px solid #d4a574;
@@ -228,6 +228,8 @@
             background: #fff9f2;
             box-shadow: 0 5px 15px rgba(139, 90, 43, 0.15);
             margin: 15px auto;
+            position: relative;
+            width: fit-content;
         }
         #puzzleContainer {
             position: relative;
@@ -236,7 +238,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            transition: gap 0.5s ease, filter 0.8s ease, opacity 0.8s ease;
         }
         .puzzle-piece {
             background-size: 300px 300px;
@@ -245,47 +246,36 @@
             position: absolute;
             width: 99px;
             height: 99px;
-            transition: transform 0.3s ease, box-shadow 0.2s ease;
-            will-change: transform;
+            transition: transform 0.3s ease, opacity 0.6s ease;
+            will-change: transform, opacity;
             box-sizing: border-box;
         }
         .puzzle-piece.selected {
             box-shadow: 0 0 0 3px #c4956a;
             z-index: 2;
         }
-        /* Склеенная картинка */
-        #puzzleContainer.complete {
-            gap: 0;
-        }
-        #puzzleContainer.complete .puzzle-piece {
-            cursor: default;
-            border-color: transparent;
-            transition: none;
-        }
-        /* Свечение при склейке */
-        #puzzleContainer.glue-effect {
-            filter: drop-shadow(0 0 10px rgba(255, 220, 150, 0.9));
-        }
-        /* Засветление перед исчезновением */
-        #puzzleContainer.fade-out {
-            filter: brightness(2);
-            opacity: 0;
-        }
 
         /* Поздравительная надпись */
         #puzzleCongrats {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 28px;
             font-weight: 700;
             color: #6b3a2a;
+            background: rgba(255, 248, 240, 0.95);
+            border-radius: 20px;
+            padding: 25px 35px;
+            z-index: 5;
             opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            margin: 20px 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
             text-align: center;
+            box-shadow: 0 8px 25px rgba(139, 90, 43, 0.25);
         }
         #puzzleCongrats.show {
             opacity: 1;
-            transform: scale(1);
         }
 
         #quizBlock { margin-top: 15px; }
@@ -309,6 +299,11 @@
             color: #8b6f5e;
             font-size: 14px;
             margin-top: 8px;
+        }
+
+        /* Секретные результаты */
+        #secretReveal {
+            margin-top: 20px;
         }
 
         .calendar {
@@ -418,9 +413,9 @@
         <div id="secretChallenge" class="hidden">
             <div id="puzzleFrame">
                 <div id="puzzleContainer"></div>
+                <div id="puzzleCongrats">🧩 Ты умничка!</div>
             </div>
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
-            <div id="puzzleCongrats">🧩 Ты умничка!</div>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden">
                 <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer;">
@@ -593,11 +588,11 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С ПЛАВНОЙ АНИМАЦИЕЙ ======
+        // ====== 6. ПАЗЛ С ПЛАВНОЙ АНИМАЦИЕЙ И РАСТВОРЕНИЕМ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
-        let puzzleElements = []; // храним созданные элементы для обновления
+        let puzzleElements = [];
 
         function initPuzzle() {
             puzzleState = Array.from({length: totalPieces}, (_, i) => i);
@@ -608,22 +603,20 @@
             selectedPiece = -1;
             puzzleSolved = false;
             puzzleElements = [];
-            renderPuzzle(true); // первый рендер с созданием элементов
+            renderPuzzle(true);
             document.getElementById('secretChallenge').classList.remove('hidden');
             document.getElementById('secretLock').classList.add('hidden');
             document.getElementById('puzzleHint').classList.remove('hidden');
             document.getElementById('quizBlock').classList.add('hidden');
             document.getElementById('secretReveal').classList.add('hidden');
             document.getElementById('nextToCalendar').disabled = true;
-            const pc = document.getElementById('puzzleContainer');
-            pc.classList.remove('complete', 'glue-effect', 'fade-out');
-            pc.style.display = 'grid';
-            document.getElementById('puzzleCongrats').classList.remove('show');
-            document.getElementById('puzzleCongrats').style.opacity = '0';
-            pc.scrollIntoView({behavior:'smooth'});
+            const congrats = document.getElementById('puzzleCongrats');
+            congrats.classList.remove('show');
+            congrats.style.opacity = '0';
+            document.getElementById('puzzleContainer').style.display = 'grid';
+            document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
 
-        // create: true – создаём новые элементы, false – обновляем позиции существующих
         function renderPuzzle(create = false) {
             const container = document.getElementById('puzzleContainer');
             const pieceWidth = 300 / puzzleSize;
@@ -643,7 +636,6 @@
                     piece.style.backgroundImage = `url('puzzle.jpg')`;
                     piece.style.backgroundSize = '300px 300px';
                     piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
-                    // начальная позиция
                     const targetRow = Math.floor(i / puzzleSize);
                     const targetCol = i % puzzleSize;
                     piece.style.transform = `translate(${targetCol*pieceWidth}px, ${targetRow*pieceHeight}px)`;
@@ -655,7 +647,6 @@
                     puzzleElements.push(piece);
                 }
             } else {
-                // обновляем позиции существующих элементов
                 for (let i = 0; i < puzzleElements.length; i++) {
                     const piece = puzzleElements[i];
                     const origIdx = puzzleState[i];
@@ -686,11 +677,8 @@
                 if (puzzleState.every((v,i)=> v===i)) {
                     puzzleSolved = true;
                     document.getElementById('puzzleHint').classList.add('hidden');
-                    // Склеивание: убираем gap через класс, добавляем свечение
+                    const pc = document.getElementById('puzzleContainer');
                     setTimeout(() => {
-                        const pc = document.getElementById('puzzleContainer');
-                        pc.classList.add('complete');
-                        // убираем абсолютное позиционирование, делаем сетку обычной
                         puzzleElements.forEach(p => {
                             p.style.position = 'static';
                             p.style.width = '100%';
@@ -698,22 +686,17 @@
                             p.style.transform = 'none';
                         });
                         pc.style.display = 'grid';
-                        // Добавляем эффект свечения на короткое время
-                        pc.classList.add('glue-effect');
                         setTimeout(() => {
-                            pc.classList.remove('glue-effect');
-                            // Через секунду затухание
+                            puzzleElements.forEach(p => p.style.opacity = '0');
+                            const congrats = document.getElementById('puzzleCongrats');
+                            congrats.classList.add('show');
                             setTimeout(() => {
-                                pc.classList.add('fade-out');
-                                document.getElementById('puzzleCongrats').classList.add('show');
-                                setTimeout(() => {
-                                    pc.style.display = 'none';
-                                    document.getElementById('quizBlock').classList.remove('hidden');
-                                    showQuiz();
-                                }, 800);
-                            }, 600);
-                        }, 600);
-                    }, 400);
+                                pc.style.display = 'none';
+                                document.getElementById('quizBlock').classList.remove('hidden');
+                                showQuiz();
+                            }, 700);
+                        }, 400);
+                    }, 600);
                 }
             }
         }
