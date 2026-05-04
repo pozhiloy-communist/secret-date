@@ -221,24 +221,28 @@
 
         /* Пазл */
         #puzzleContainer {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            position: relative;
             width: 300px;
             height: 300px;
             margin: 15px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 2px;
             transition: gap 0.5s ease, filter 0.8s ease, opacity 0.8s ease;
         }
         .puzzle-piece {
             background-size: 300px 300px;
             border: 2px solid #fff;
-            box-sizing: border-box;
             cursor: pointer;
+            position: absolute;
+            width: 100px;
+            height: 100px;
             transition: transform 0.25s ease, box-shadow 0.2s ease;
-            position: relative;
+            will-change: transform;
         }
         .puzzle-piece.selected {
             box-shadow: 0 0 0 3px #c4956a;
+            z-index: 2;
         }
         /* Склеенная картинка */
         #puzzleContainer.complete {
@@ -248,6 +252,7 @@
             cursor: default;
             box-shadow: none;
             border-color: transparent;
+            transition: none;
         }
         /* Засветление перед исчезновением */
         #puzzleContainer.fade-out {
@@ -255,19 +260,28 @@
             opacity: 0;
         }
 
-        /* Поздравительная надпись */
+        /* Поздравительная надпись внутри пазла */
         #puzzleCongrats {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
             font-size: 28px;
             font-weight: 700;
             color: #6b3a2a;
+            background: rgba(255, 248, 240, 0.95);
+            border-radius: 20px;
+            padding: 25px 35px;
+            z-index: 5;
             opacity: 0;
-            transform: scale(0.8);
             transition: opacity 0.6s ease, transform 0.6s ease;
-            margin: 20px 0;
+            pointer-events: none;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(139, 90, 43, 0.25);
         }
         #puzzleCongrats.show {
             opacity: 1;
-            transform: scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         #quizBlock { margin-top: 15px; }
@@ -281,7 +295,6 @@
             text-align: center;
             width: 80%;
         }
-        /* Подсказки с рамкой с обеих сторон */
         .hint-text {
             display: inline-block;
             background: #f9f2e8;
@@ -292,6 +305,17 @@
             color: #8b6f5e;
             font-size: 14px;
             margin-top: 8px;
+        }
+
+        /* Секретные результаты */
+        #secretReveal {
+            margin-top: 20px;
+        }
+        #secretHisCard {
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .calendar {
@@ -340,7 +364,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ 1-3 (без изменений) -->
+    <!-- ЭКРАНЫ 1-3 -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -403,9 +427,8 @@
         <div id="secretChallenge" class="hidden">
             <div id="puzzleContainer"></div>
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
-            <div id="puzzleCongrats">🧩 Ты умничка!</div>
             <div id="quizBlock" class="hidden"></div>
-            <div id="secretReveal" class="hidden" style="margin-top:15px;">
+            <div id="secretReveal" class="hidden">
                 <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer;">
                     <span style="font-size:36px;">🎵</span>
                     <span>Концерт Петра Налича</span>
@@ -413,7 +436,6 @@
                 </div>
                 <p style="margin-top:15px;">или предложи свой вариант:</p>
                 <input type="text" id="customInputSecret" class="quiz-input" placeholder="Твой вариант..." oninput="updateCustomSecret()">
-                <button id="btnCustomSecret" onclick="selectCustomSecret()" disabled>Выбрать свой</button>
             </div>
         </div>
 
@@ -463,7 +485,6 @@
         let selectedOption = null;
         let customText = '';
         let selectedDate = null;
-        let selectedSecretOption = null;
 
         // ====== 1. ЧАСТИЦЫ ======
         (() => {
@@ -575,11 +596,10 @@
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             if (el) el.classList.add('selected');
             selectedOption = type;
-            selectedSecretOption = null;
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ ======
+        // ====== 6. ПАЗЛ С АНИМАЦИЕЙ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
@@ -596,16 +616,22 @@
             document.getElementById('secretChallenge').classList.remove('hidden');
             document.getElementById('secretLock').classList.add('hidden');
             document.getElementById('puzzleHint').classList.remove('hidden');
-            document.getElementById('puzzleCongrats').classList.remove('show');
             document.getElementById('quizBlock').classList.add('hidden');
             document.getElementById('secretReveal').classList.add('hidden');
-            document.getElementById('puzzleContainer').classList.remove('complete', 'fade-out');
-            document.getElementById('puzzleContainer').scrollIntoView({behavior:'smooth'});
+            document.getElementById('nextToCalendar').disabled = true;
+            const pc = document.getElementById('puzzleContainer');
+            pc.classList.remove('complete', 'fade-out');
+            pc.style.display = 'grid';
+            document.getElementById('puzzleCongrats')?.remove();
+            pc.scrollIntoView({behavior:'smooth'});
         }
 
         function renderPuzzle() {
             const container = document.getElementById('puzzleContainer');
-            container.innerHTML = '';
+            // Очищаем всё, кроме поздравительного блока (если он был добавлен ранее)
+            Array.from(container.children).forEach(child => {
+                if (child.id !== 'puzzleCongrats') child.remove();
+            });
             const pieceWidth = 300 / puzzleSize;
             const pieceHeight = 300 / puzzleSize;
             for (let i=0; i<totalPieces; i++) {
@@ -619,6 +645,10 @@
                 piece.style.backgroundImage = `url('puzzle.jpg')`;
                 piece.style.backgroundSize = '300px 300px';
                 piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
+                // Позиционируем через transform для плавности
+                const targetRow = Math.floor(i / puzzleSize);
+                const targetCol = i % puzzleSize;
+                piece.style.transform = `translate(${targetCol*pieceWidth}px, ${targetRow*pieceHeight}px)`;
                 piece.dataset.index = i;
                 if (selectedPiece === i) piece.classList.add('selected');
                 piece.addEventListener('click', () => onPieceClick(i));
@@ -644,12 +674,22 @@
                     setTimeout(() => {
                         const pc = document.getElementById('puzzleContainer');
                         pc.classList.add('complete');
+                        // Убираем transform и абсолютное позиционирование для склейки
+                        Array.from(pc.querySelectorAll('.puzzle-piece')).forEach(p => {
+                            p.style.transform = 'none';
+                            p.style.position = 'static';
+                        });
                         setTimeout(() => {
                             pc.classList.add('fade-out');
-                            const congrats = document.getElementById('puzzleCongrats');
-                            congrats.classList.add('show');
+                            // Добавляем поздравительную надпись в центр пазла
+                            const congrats = document.createElement('div');
+                            congrats.id = 'puzzleCongrats';
+                            congrats.textContent = '🧩 Ты умничка!';
+                            pc.appendChild(congrats);
+                            requestAnimationFrame(() => {
+                                congrats.classList.add('show');
+                            });
                             setTimeout(() => {
-                                congrats.classList.remove('show');
                                 pc.style.display = 'none';
                                 document.getElementById('quizBlock').classList.remove('hidden');
                                 showQuiz();
@@ -667,7 +707,7 @@
             {
                 question: "Какая фраза здесь зашифрована: «АХАХАХАХВХАХПХАХАХ»?",
                 hints: ["💡 Подсказка: Фраза связана с радостью и торжеством.", "💡 Подсказка: Все говорят её в Пасху."],
-                answer: ["христос воскресе", "христос воскрес"]
+                answer: ["христос воскресе", "христос воскрес", "христос воскресе!", "христос воскрес!"]
             },
             {
                 question: "Столица Португалии?",
@@ -694,6 +734,8 @@
                 document.getElementById('secretReveal').classList.remove('hidden');
                 document.getElementById('secretHisCard').classList.remove('selected');
                 document.getElementById('nextToCalendar').disabled = true;
+                // Сбрасываем выбранный вариант, если был
+                selectedOption = null;
                 return;
             }
             const q = quizData[currentQuestion];
@@ -712,12 +754,15 @@
 
         window.checkAnswer = function() {
             const input = document.getElementById('quizAnswer');
+            if (!input) return;
             const userAnswer = input.value.trim().toLowerCase();
             const correctAnswers = quizData[currentQuestion].answer.map(a=>a.toLowerCase());
             if (correctAnswers.includes(userAnswer)) {
                 currentQuestion++;
                 renderQuestion();
             } else {
+                input.value = ''; // Очищаем поле
+                input.focus();
                 wrongAttempts++;
                 const hintArea = document.getElementById('hintArea');
                 if (wrongAttempts <= quizData[currentQuestion].hints.length) {
@@ -733,29 +778,34 @@
 
         // ====== 8. СЕКРЕТНЫЕ ВЫБОРЫ ======
         window.updateCustomSecret = function() {
-            document.getElementById('btnCustomSecret').disabled = document.getElementById('customInputSecret').value.trim() === '';
+            const val = document.getElementById('customInputSecret').value.trim();
+            if (val.length > 0) {
+                selectedOption = 'custom_secret';
+                customText = val;
+                document.getElementById('nextToCalendar').disabled = false;
+            } else {
+                // Если поле пустое и ничего не выбрано, отключаем кнопку
+                if (selectedOption !== 'nalich') {
+                    document.getElementById('nextToCalendar').disabled = true;
+                }
+            }
         };
         window.selectSecretHis = function() {
             document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('secretHisCard').classList.add('selected');
             selectedOption = 'nalich';
-            selectedSecretOption = 'his';
-            document.getElementById('nextToCalendar').disabled = false;
-        };
-        window.selectCustomSecret = function() {
-            const val = document.getElementById('customInputSecret').value.trim();
-            if (!val) return;
-            customText = val;
-            selectedOption = 'custom_secret';
-            selectedSecretOption = 'custom';
+            document.getElementById('customInputSecret').value = ''; // очищаем поле "свой"
+            customText = '';
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 9. КАЛЕНДАРЬ ======
+        // ====== 9. КАЛЕНДАРЬ (со следующего дня) ======
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
-            const today = new Date(); today.setHours(0,0,0,0);
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            today.setDate(today.getDate() + 1); // Разрешаем только со следующего дня
             const fd = new Date(curYear, curMonth, 1).getDay();
             const dim = new Date(curYear, curMonth+1, 0).getDate();
             const mn = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
