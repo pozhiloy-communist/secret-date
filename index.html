@@ -229,6 +229,11 @@
             box-shadow: 0 5px 15px rgba(139, 90, 43, 0.15);
             margin: 15px auto;
             position: relative;
+            transition: opacity 0.5s ease;
+        }
+        #puzzleFrame.hidden-frame {
+            opacity: 0;
+            pointer-events: none;
         }
         #puzzleContainer {
             position: relative;
@@ -237,12 +242,12 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            transition: gap 0.5s ease;
+            transition: gap 0.4s ease;
         }
-        /* Каждый кусочек пазла со своей рамочкой */
+        /* Каждый кусочек пазла – без постоянной рамки */
         .puzzle-piece {
             background-size: 300px 300px;
-            border: 2px solid #c4956a;
+            border: 2px solid transparent;
             cursor: pointer;
             position: absolute;
             width: 99px;
@@ -251,10 +256,11 @@
             will-change: transform, opacity;
             box-sizing: border-box;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        /* Рамка появляется только при выделении */
         .puzzle-piece.selected {
-            box-shadow: 0 0 0 3px #a67c52;
+            border-color: #a67c52;
+            box-shadow: 0 0 0 3px #c4956a;
             z-index: 2;
         }
         /* После сборки убираем зазоры */
@@ -620,8 +626,11 @@
             congrats.classList.remove('show');
             congrats.style.opacity = '0';
             const pc = document.getElementById('puzzleContainer');
+            const frame = document.getElementById('puzzleFrame');
             pc.classList.remove('solved');
             pc.style.display = 'grid';
+            frame.classList.remove('hidden-frame');
+            frame.style.opacity = '1';
             document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
 
@@ -686,26 +695,32 @@
                     puzzleSolved = true;
                     document.getElementById('puzzleHint').classList.add('hidden');
                     const pc = document.getElementById('puzzleContainer');
+                    const frame = document.getElementById('puzzleFrame');
+                    // Мгновенно превращаем в единую картинку без перемещений
+                    puzzleElements.forEach(p => {
+                        p.style.transition = 'none';        // убираем анимацию
+                        p.style.position = 'static';
+                        p.style.width = '100%';
+                        p.style.height = '100%';
+                        p.style.transform = 'none';
+                    });
+                    pc.classList.add('solved'); // gap:0
+                    // Через 2 секунды растворяем фрагменты
                     setTimeout(() => {
-                        pc.classList.add('solved');
-                        puzzleElements.forEach(p => {
-                            p.style.position = 'static';
-                            p.style.width = '100%';
-                            p.style.height = '100%';
-                            p.style.transform = 'none';
-                        });
-                        setTimeout(() => {
-                            puzzleElements.forEach(p => p.classList.add('fade-out'));
-                            const congrats = document.getElementById('puzzleCongrats');
-                            congrats.classList.add('show');
-                            setTimeout(() => {
-                                pc.style.display = 'none';
-                                congrats.classList.remove('show');
-                                document.getElementById('quizBlock').classList.remove('hidden');
-                                showQuiz();
-                            }, 1500);
-                        }, 1000);
-                    }, 300);
+                        puzzleElements.forEach(p => p.classList.add('fade-out'));
+                    }, 2000);
+                    // Одновременно с растворением начинаем показывать надпись
+                    setTimeout(() => {
+                        const congrats = document.getElementById('puzzleCongrats');
+                        congrats.classList.add('show');
+                    }, 2200);
+                    // Ещё через 1.5 секунды скрываем рамку, надпись и запускаем викторину
+                    setTimeout(() => {
+                        frame.classList.add('hidden-frame');
+                        document.getElementById('puzzleCongrats').classList.remove('show');
+                        document.getElementById('quizBlock').classList.remove('hidden');
+                        showQuiz();
+                    }, 3700);
                 }
             }
         }
