@@ -224,19 +224,19 @@
             display: inline-block;
             border: 3px solid #c4956a;
             border-radius: 20px;
-            padding: 0;               /* убираем внутренний отступ, чтобы картинка была впритык */
+            padding: 12px;
             background: #fff9f2;
             box-shadow: 0 5px 15px rgba(139, 90, 43, 0.15);
             margin: 15px auto;
             position: relative;
-            transition: opacity 0.5s ease;
-            width: 300px;
-            height: 300px;
-            overflow: hidden;         /* чтобы скругленные углы обрезали картинку */
+            transition: padding 0.5s ease, opacity 0.5s ease;
         }
         #puzzleFrame.hidden-frame {
             opacity: 0;
             pointer-events: none;
+        }
+        #puzzleFrame.no-padding {
+            padding: 0;
         }
         #puzzleContainer {
             position: relative;
@@ -257,7 +257,7 @@
             transition: transform 0.3s ease, opacity 0.6s ease, border-radius 0.5s ease;
             will-change: transform, opacity;
             box-sizing: border-box;
-            border-radius: 6px;        /* скругленные уголки во время сборки */
+            border-radius: 6px;
         }
         .puzzle-piece.selected {
             border-color: #a67c52;
@@ -315,6 +315,15 @@
             margin-top: 8px;
         }
 
+        /* Секретные результаты по центру */
+        #secretReveal {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #secretReveal .option-card {
+            margin: 0 auto 15px;
+        }
+
         .calendar {
             background: #fff9f2;
             border-radius: 20px;
@@ -361,7 +370,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.35" title="Громкость">
     </div>
 
-    <!-- ЭКРАНЫ 1-3 -->
+    <!-- ЭКРАНЫ 1-3 без изменений -->
     <div id="screen1" class="container">
         <div class="big-emoji">🔍✨</div>
         <h2>Анализ настроения...</h2>
@@ -597,9 +606,9 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С ПЛАВНОЙ СБОРКОЙ ======
+        // ====== 6. ПАЗЛ С ПЛАВНОЙ СБОРКОЙ К ЦЕНТРУ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
-        const pieceSize = 100;            // при gap:0 каждый кусок 100px
+        const pieceSize = 96;            // 300 - (6*2) / 3 = 96
         const gapSize = 6;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
@@ -628,7 +637,7 @@
             const frame = document.getElementById('puzzleFrame');
             pc.classList.remove('solved');
             pc.style.display = 'grid';
-            frame.classList.remove('hidden-frame');
+            frame.classList.remove('hidden-frame', 'no-padding');
             frame.style.opacity = '1';
             document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
@@ -652,7 +661,6 @@
                     piece.style.backgroundPosition = `-${col*pieceSize}px -${row*pieceSize}px`;
                     const targetRow = Math.floor(i / puzzleSize);
                     const targetCol = i % puzzleSize;
-                    // Начальная позиция с учётом зазора
                     piece.style.transform = `translate(${targetCol*(pieceSize+gapSize)}px, ${targetRow*(pieceSize+gapSize)}px)`;
                     piece.dataset.index = i;
                     if (selectedPiece === i) piece.classList.add('selected');
@@ -694,35 +702,31 @@
                     document.getElementById('puzzleHint').classList.add('hidden');
                     const pc = document.getElementById('puzzleContainer');
                     const frame = document.getElementById('puzzleFrame');
-
-                    // Плавно сдвигаем фрагменты к центру, убирая зазоры
-                    puzzleElements.forEach((p, i) => {
-                        const targetRow = Math.floor(i / puzzleSize);
-                        const targetCol = i % puzzleSize;
-                        // Конечная позиция без gap – каждый кусок ровно на своём месте
-                        p.style.transform = `translate(${targetCol * pieceSize}px, ${targetRow * pieceSize}px)`;
-                        // Делаем углы прямыми
-                        p.style.borderRadius = '0';
+                    
+                    // Переводим фрагменты в статический поток сетки, чтобы они плавно заняли ячейки
+                    puzzleElements.forEach(p => {
+                        p.style.position = 'static';
+                        p.style.width = '100%';
+                        p.style.height = '100%';
+                        p.style.transform = 'none';
+                        p.style.borderRadius = '0';  // убираем скругление для цельной картинки
                     });
+                    pc.classList.add('solved'); // gap:0 за 0.5s
+                    frame.classList.add('no-padding'); // убираем отступы рамки
 
-                    // Запускаем анимацию стыковки (gap -> 0) через класс solved, но мы уже двигаем,
-                    // поэтому просто делаем gap:0 чтобы не мешало, хотя transform уже ставит куски вплотную.
-                    // Оставим класс solved для гарантии.
-                    pc.classList.add('solved');
-
-                    // После завершения анимации (0.5s) показываем надпись
+                    // Через 1 секунду показываем поздравление
                     setTimeout(() => {
                         const congrats = document.getElementById('puzzleCongrats');
                         congrats.classList.add('show');
-                    }, 600);
+                    }, 1000);
 
-                    // Ещё через 2 секунды растворяем фрагменты и надпись
+                    // Через 3 секунды от начала скрываем поздравление и фрагменты
                     setTimeout(() => {
-                        puzzleElements.forEach(p => p.classList.add('fade-out'));
                         document.getElementById('puzzleCongrats').classList.remove('show');
-                    }, 2600);
+                        puzzleElements.forEach(p => p.classList.add('fade-out'));
+                    }, 3000);
 
-                    // После растворения скрываем рамку и запускаем викторину
+                    // Ещё через 0.8 секунды скрываем рамку и запускаем викторину
                     setTimeout(() => {
                         frame.classList.add('hidden-frame');
                         setTimeout(() => {
@@ -730,7 +734,7 @@
                             document.getElementById('quizBlock').classList.remove('hidden');
                             showQuiz();
                         }, 500);
-                    }, 3200);
+                    }, 3800);
                 }
             }
         }
