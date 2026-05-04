@@ -237,12 +237,8 @@
         }
         #puzzleContainer {
             position: relative;
-            width: 300px;
-            height: 300px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            transition: gap 0.5s ease;
+            width: 332px;
+            height: 332px;
         }
         .puzzle-piece {
             background-size: 300px 300px;
@@ -304,6 +300,10 @@
             color: #8b6f5e;
             font-size: 14px;
             margin-top: 8px;
+        }
+
+        #secretReveal {
+            text-align: center;
         }
 
         .calendar {
@@ -420,7 +420,7 @@
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden">
-                <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer;">
+                <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer; margin: 0 auto;">
                     <span style="font-size:36px;">🎵</span>
                     <span>Концерт Петра Налича</span>
                     <small style="color:#8b6f5e;">[Дата и город уточняются]</small>
@@ -590,9 +590,11 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С ПЛАВНОЙ СБОРКОЙ К ЦЕНТРУ ======
+        // ====== 6. ПАЗЛ С ОТСТУПАМИ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
-        const pieceSize = 100; // 300 / 3
+        const pieceSize = 100;         // размер одного фрагмента
+        const puzzleGap = 16;         // зазор между фрагментами
+        const step = pieceSize + puzzleGap; // шаг сетки с учётом зазора
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
         let puzzleElements = [];
@@ -616,12 +618,10 @@
             const congrats = document.getElementById('puzzleCongrats');
             congrats.classList.remove('show');
             congrats.style.opacity = '0';
-            const pc = document.getElementById('puzzleContainer');
             const frame = document.getElementById('puzzleFrame');
             frame.classList.remove('hidden-frame');
             frame.style.display = 'inline-block';
             frame.style.opacity = '1';
-            pc.style.display = 'grid';
             document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
 
@@ -643,7 +643,8 @@
                     piece.style.backgroundPosition = `-${col*pieceSize}px -${row*pieceSize}px`;
                     const targetRow = Math.floor(i / puzzleSize);
                     const targetCol = i % puzzleSize;
-                    piece.style.transform = `translate(${targetCol*pieceSize}px, ${targetRow*pieceSize}px)`;
+                    // начальная позиция с зазором
+                    piece.style.transform = `translate(${targetCol * step}px, ${targetRow * step}px)`;
                     piece.dataset.index = i;
                     piece.addEventListener('click', () => onPieceClick(i));
                     container.appendChild(piece);
@@ -658,7 +659,7 @@
                     piece.style.backgroundPosition = `-${col*pieceSize}px -${row*pieceSize}px`;
                     const targetRow = Math.floor(i / puzzleSize);
                     const targetCol = i % puzzleSize;
-                    piece.style.transform = `translate(${targetCol*pieceSize}px, ${targetRow*pieceSize}px)`;
+                    piece.style.transform = `translate(${targetCol * step}px, ${targetRow * step}px)`;
                 }
             }
         }
@@ -685,39 +686,30 @@
                     const congrats = document.getElementById('puzzleCongrats');
                     const frame = document.getElementById('puzzleFrame');
 
-                    // Настраиваем transition для плавного слияния к центру
+                    // Все элементы плавно стягиваются к центру (без зазоров)
                     puzzleElements.forEach(p => {
                         p.style.transition = 'transform 0.5s ease, border-width 0.5s ease, opacity 0.6s ease';
                         p.style.borderWidth = '0px';
                     });
-
-                    // Сдвигаем крайние элементы внутрь, убирая бывшие зазоры от border (2px)
-                    puzzleElements.forEach((p, i) => {
+                    for (let i = 0; i < puzzleElements.length; i++) {
                         const row = Math.floor(i / puzzleSize);
                         const col = i % puzzleSize;
-                        let newX = col * pieceSize;
-                        let newY = row * pieceSize;
-                        if (col === 0) newX += 2;
-                        else if (col === 2) newX -= 2;
-                        if (row === 0) newY += 2;
-                        else if (row === 2) newY -= 2;
-                        p.style.transform = `translate(${newX}px, ${newY}px)`;
-                    });
+                        // Конечная позиция: без зазоров и с отступом puzzleGap для центрирования
+                        puzzleElements[i].style.transform = `translate(${col * pieceSize + puzzleGap}px, ${row * pieceSize + puzzleGap}px)`;
+                    }
 
-                    // 0.5s анимация + 2s показать картинку → растворение
+                    // Показать собранную картинку на 2 секунды, затем растворить
                     setTimeout(() => {
                         puzzleElements.forEach(p => p.style.opacity = '0');
-                        // Дождаться конца растворения (0.6s), затем показать надпись
                         setTimeout(() => {
+                            // Надпись «Ты умничка!»
                             congrats.classList.add('show');
                             congrats.style.opacity = '1';
-                            // Надпись видна ~1.5s
                             setTimeout(() => {
                                 congrats.style.opacity = '0';
                                 congrats.classList.remove('show');
                                 frame.classList.add('hidden-frame');
                                 frame.style.opacity = '0';
-                                // Ещё 0.5s и показать викторину
                                 setTimeout(() => {
                                     frame.style.display = 'none';
                                     document.getElementById('quizBlock').classList.remove('hidden');
@@ -827,7 +819,7 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 9. КАЛЕНДАРЬ (со следующего дня) ======
+        // ====== 9. КАЛЕНДАРЬ ======
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
