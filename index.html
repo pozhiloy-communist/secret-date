@@ -577,11 +577,11 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ★★★ ПАРАМЕТРЫ ПАЗЛА ★★★
+        // ★★★ ПАЗЛ С АНИМАЦИЕЙ СКЛЕИВАНИЯ К ЦЕНТРУ ★★★
         const pieceSize = 100;
-        const gap = 6;                 // уменьшенный зазор
-        const step = pieceSize + gap;  // 106
-        const totalPieces = 9;         // 3x3
+        const gap = 6;
+        const step = pieceSize + gap;   // 106
+        const totalPieces = 9;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
         let puzzleElements = [];
@@ -672,18 +672,17 @@
                     const congrats = document.getElementById('puzzleCongrats');
                     const frame = document.getElementById('puzzleFrame');
 
-                    // подготовка к склейке
+                    // Анимация склеивания к центру
                     puzzleElements.forEach(p => {
                         p.style.transition = 'transform 0.5s ease, border-width 0.5s ease, opacity 0.6s ease';
                         p.style.borderWidth = '0px';
                     });
-
-                    // перемещаем каждый фрагмент на своё конечное место без зазоров
                     for (let i = 0; i < puzzleElements.length; i++) {
                         const row = Math.floor(i / 3);
                         const col = i % 3;
-                        // важно: без учёта gap и без дополнительного padding – прямо в сетку 3×100
-                        puzzleElements[i].style.transform = `translate(${col * pieceSize}px, ${row * pieceSize}px)`;
+                        // конечная позиция: без зазоров, но с тем же смещением, что и у центра
+                        // центральный элемент (1,1) остаётся на (106,106)
+                        puzzleElements[i].style.transform = `translate(${col * pieceSize + gap}px, ${row * pieceSize + gap}px)`;
                     }
 
                     setTimeout(() => {
