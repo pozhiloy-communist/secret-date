@@ -219,53 +219,56 @@
         }
         .secret-option:hover { background: #eadacb; }
 
-        /* Пазл */
+        /* Рамка пазла */
+        #puzzleFrame {
+            display: inline-block;
+            border: 3px solid #d4a574;
+            border-radius: 20px;
+            padding: 10px;
+            background: #fff9f2;
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.15);
+            margin: 15px auto;
+            position: relative;
+        }
         #puzzleContainer {
             position: relative;
             width: 300px;
             height: 300px;
-            margin: 15px auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            transition: gap 0.5s ease, filter 0.8s ease, opacity 0.8s ease;
+            transition: gap 0.5s ease;
         }
         .puzzle-piece {
             background-size: 300px 300px;
-            border: 2px solid #fff;
+            border: 2px solid #f5ebe0;
             cursor: pointer;
             position: absolute;
-            width: 100px;
-            height: 100px;
-            transition: transform 0.25s ease, box-shadow 0.2s ease;
-            will-change: transform;
+            width: 99px;
+            height: 99px;
+            transition: transform 0.3s ease, opacity 0.6s ease;
+            will-change: transform, opacity;
+            box-sizing: border-box;
         }
         .puzzle-piece.selected {
             box-shadow: 0 0 0 3px #c4956a;
             z-index: 2;
         }
-        /* Склеенная картинка */
-        #puzzleContainer.complete {
+        /* После сборки убираем зазоры */
+        #puzzleContainer.solved {
             gap: 0;
         }
-        #puzzleContainer.complete .puzzle-piece {
-            cursor: default;
-            box-shadow: none;
-            border-color: transparent;
-            transition: none;
-        }
-        /* Засветление перед исчезновением */
-        #puzzleContainer.fade-out {
-            filter: brightness(2);
+        /* Растворение кусочков */
+        .puzzle-piece.fade-out {
             opacity: 0;
         }
 
-        /* Поздравительная надпись внутри пазла */
+        /* Поздравительная надпись */
         #puzzleCongrats {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
+            transform: translate(-50%, -50%);
             font-size: 28px;
             font-weight: 700;
             color: #6b3a2a;
@@ -274,14 +277,13 @@
             padding: 25px 35px;
             z-index: 5;
             opacity: 0;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.6s ease;
             pointer-events: none;
             text-align: center;
             box-shadow: 0 8px 25px rgba(139, 90, 43, 0.25);
         }
         #puzzleCongrats.show {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
         }
 
         #quizBlock { margin-top: 15px; }
@@ -305,17 +307,6 @@
             color: #8b6f5e;
             font-size: 14px;
             margin-top: 8px;
-        }
-
-        /* Секретные результаты */
-        #secretReveal {
-            margin-top: 20px;
-        }
-        #secretHisCard {
-            cursor: pointer;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .calendar {
@@ -392,7 +383,7 @@
         <button id="declineBtn" tabindex="-1" onfocus="this.blur()" onclick="declineInvite()">Отклонить (нет)</button>
     </div>
 
-    <!-- ЭКРАН 4: ВЫБОР ВАРИАНТА -->
+    <!-- ЭКРАН 4 -->
     <div id="screen4" class="container hidden">
         <div class="big-emoji">✨</div>
         <h2>Выбери вариант</h2>
@@ -415,7 +406,6 @@
             </div>
         </div>
 
-        <!-- Секретный вариант с замком -->
         <div class="secret-card" id="secretLock">
             <div class="secret-option" onclick="startSecretChallenge()">
                 <span style="font-size:48px;">🔒</span>
@@ -423,9 +413,11 @@
             </div>
         </div>
 
-        <!-- Скрытый контейнер для пазла и вопросов -->
         <div id="secretChallenge" class="hidden">
-            <div id="puzzleContainer"></div>
+            <div id="puzzleFrame">
+                <div id="puzzleContainer"></div>
+                <div id="puzzleCongrats">🧩 Ты умничка!</div>
+            </div>
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden">
@@ -599,10 +591,11 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 6. ПАЗЛ С АНИМАЦИЕЙ ======
+        // ====== 6. ПАЗЛ ======
         const puzzleSize = 3, totalPieces = puzzleSize * puzzleSize;
         let puzzleState = [], selectedPiece = -1;
         let puzzleSolved = false;
+        let puzzleElements = [];
 
         function initPuzzle() {
             puzzleState = Array.from({length: totalPieces}, (_, i) => i);
@@ -612,47 +605,65 @@
             }
             selectedPiece = -1;
             puzzleSolved = false;
-            renderPuzzle();
+            puzzleElements = [];
+            renderPuzzle(true);
             document.getElementById('secretChallenge').classList.remove('hidden');
             document.getElementById('secretLock').classList.add('hidden');
             document.getElementById('puzzleHint').classList.remove('hidden');
             document.getElementById('quizBlock').classList.add('hidden');
             document.getElementById('secretReveal').classList.add('hidden');
             document.getElementById('nextToCalendar').disabled = true;
+            const congrats = document.getElementById('puzzleCongrats');
+            congrats.classList.remove('show');
+            congrats.style.opacity = '0';
             const pc = document.getElementById('puzzleContainer');
-            pc.classList.remove('complete', 'fade-out');
+            pc.classList.remove('solved');
             pc.style.display = 'grid';
-            document.getElementById('puzzleCongrats')?.remove();
-            pc.scrollIntoView({behavior:'smooth'});
+            document.getElementById('puzzleFrame').scrollIntoView({behavior:'smooth'});
         }
 
-        function renderPuzzle() {
+        function renderPuzzle(create = false) {
             const container = document.getElementById('puzzleContainer');
-            // Очищаем всё, кроме поздравительного блока (если он был добавлен ранее)
-            Array.from(container.children).forEach(child => {
-                if (child.id !== 'puzzleCongrats') child.remove();
-            });
             const pieceWidth = 300 / puzzleSize;
             const pieceHeight = 300 / puzzleSize;
-            for (let i=0; i<totalPieces; i++) {
-                const origIdx = puzzleState[i];
-                const row = Math.floor(origIdx / puzzleSize);
-                const col = origIdx % puzzleSize;
-                const piece = document.createElement('div');
-                piece.className = 'puzzle-piece';
-                piece.style.width = pieceWidth + 'px';
-                piece.style.height = pieceHeight + 'px';
-                piece.style.backgroundImage = `url('puzzle.jpg')`;
-                piece.style.backgroundSize = '300px 300px';
-                piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
-                // Позиционируем через transform для плавности
-                const targetRow = Math.floor(i / puzzleSize);
-                const targetCol = i % puzzleSize;
-                piece.style.transform = `translate(${targetCol*pieceWidth}px, ${targetRow*pieceHeight}px)`;
-                piece.dataset.index = i;
-                if (selectedPiece === i) piece.classList.add('selected');
-                piece.addEventListener('click', () => onPieceClick(i));
-                container.appendChild(piece);
+
+            if (create) {
+                container.innerHTML = '';
+                puzzleElements = [];
+                for (let i = 0; i < totalPieces; i++) {
+                    const origIdx = puzzleState[i];
+                    const row = Math.floor(origIdx / puzzleSize);
+                    const col = origIdx % puzzleSize;
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.style.width = pieceWidth + 'px';
+                    piece.style.height = pieceHeight + 'px';
+                    piece.style.backgroundImage = `url('puzzle.jpg')`;
+                    piece.style.backgroundSize = '300px 300px';
+                    piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
+                    const targetRow = Math.floor(i / puzzleSize);
+                    const targetCol = i % puzzleSize;
+                    piece.style.transform = `translate(${targetCol*pieceWidth}px, ${targetRow*pieceHeight}px)`;
+                    piece.dataset.index = i;
+                    if (selectedPiece === i) piece.classList.add('selected');
+                    else piece.classList.remove('selected');
+                    piece.addEventListener('click', () => onPieceClick(i));
+                    container.appendChild(piece);
+                    puzzleElements.push(piece);
+                }
+            } else {
+                for (let i = 0; i < puzzleElements.length; i++) {
+                    const piece = puzzleElements[i];
+                    const origIdx = puzzleState[i];
+                    const row = Math.floor(origIdx / puzzleSize);
+                    const col = origIdx % puzzleSize;
+                    piece.style.backgroundPosition = `-${col*pieceWidth}px -${row*pieceHeight}px`;
+                    const targetRow = Math.floor(i / puzzleSize);
+                    const targetCol = i % puzzleSize;
+                    piece.style.transform = `translate(${targetCol*pieceWidth}px, ${targetRow*pieceHeight}px)`;
+                    if (selectedPiece === i) piece.classList.add('selected');
+                    else piece.classList.remove('selected');
+                }
             }
         }
 
@@ -660,41 +671,42 @@
             if (puzzleSolved) return;
             if (selectedPiece === -1) {
                 selectedPiece = index;
-                renderPuzzle();
+                renderPuzzle(false);
             } else if (selectedPiece === index) {
                 selectedPiece = -1;
-                renderPuzzle();
+                renderPuzzle(false);
             } else {
                 [puzzleState[selectedPiece], puzzleState[index]] = [puzzleState[index], puzzleState[selectedPiece]];
                 selectedPiece = -1;
-                renderPuzzle();
+                renderPuzzle(false);
                 if (puzzleState.every((v,i)=> v===i)) {
                     puzzleSolved = true;
                     document.getElementById('puzzleHint').classList.add('hidden');
+                    const pc = document.getElementById('puzzleContainer');
+                    // Запускаем анимацию склеивания
                     setTimeout(() => {
-                        const pc = document.getElementById('puzzleContainer');
-                        pc.classList.add('complete');
-                        // Убираем transform и абсолютное позиционирование для склейки
-                        Array.from(pc.querySelectorAll('.puzzle-piece')).forEach(p => {
-                            p.style.transform = 'none';
+                        pc.classList.add('solved');
+                        puzzleElements.forEach(p => {
                             p.style.position = 'static';
+                            p.style.width = '100%';
+                            p.style.height = '100%';
+                            p.style.transform = 'none';
                         });
+                        // Ждём, пока склеивание завершится визуально (0.5s) + показ картинки (1s)
                         setTimeout(() => {
-                            pc.classList.add('fade-out');
-                            // Добавляем поздравительную надпись в центр пазла
-                            const congrats = document.createElement('div');
-                            congrats.id = 'puzzleCongrats';
-                            congrats.textContent = '🧩 Ты умничка!';
-                            pc.appendChild(congrats);
-                            requestAnimationFrame(() => {
-                                congrats.classList.add('show');
-                            });
+                            // Растворяем кусочки
+                            puzzleElements.forEach(p => p.classList.add('fade-out'));
+                            // Показываем поздравление
+                            const congrats = document.getElementById('puzzleCongrats');
+                            congrats.classList.add('show');
+                            // Через 1.5 секунды убираем всё и запускаем вопросы
                             setTimeout(() => {
                                 pc.style.display = 'none';
+                                congrats.classList.remove('show');
                                 document.getElementById('quizBlock').classList.remove('hidden');
                                 showQuiz();
-                            }, 2000);
-                        }, 2000);
+                            }, 1500);
+                        }, 1000);
                     }, 300);
                 }
             }
@@ -734,7 +746,6 @@
                 document.getElementById('secretReveal').classList.remove('hidden');
                 document.getElementById('secretHisCard').classList.remove('selected');
                 document.getElementById('nextToCalendar').disabled = true;
-                // Сбрасываем выбранный вариант, если был
                 selectedOption = null;
                 return;
             }
@@ -761,7 +772,7 @@
                 currentQuestion++;
                 renderQuestion();
             } else {
-                input.value = ''; // Очищаем поле
+                input.value = '';
                 input.focus();
                 wrongAttempts++;
                 const hintArea = document.getElementById('hintArea');
@@ -770,9 +781,6 @@
                 }
                 input.style.borderColor = '#c06a4b';
                 setTimeout(() => input.style.borderColor = '#d4a574', 800);
-                if (wrongAttempts > quizData[currentQuestion].hints.length) {
-                    alert('К сожалению, подсказки закончились. Попробуй ещё раз!');
-                }
             }
         };
 
@@ -784,7 +792,6 @@
                 customText = val;
                 document.getElementById('nextToCalendar').disabled = false;
             } else {
-                // Если поле пустое и ничего не выбрано, отключаем кнопку
                 if (selectedOption !== 'nalich') {
                     document.getElementById('nextToCalendar').disabled = true;
                 }
@@ -794,18 +801,18 @@
             document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('secretHisCard').classList.add('selected');
             selectedOption = 'nalich';
-            document.getElementById('customInputSecret').value = ''; // очищаем поле "свой"
+            document.getElementById('customInputSecret').value = '';
             customText = '';
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // ====== 9. КАЛЕНДАРЬ (со следующего дня) ======
+        // ====== 9. КАЛЕНДАРЬ ======
         let curMonth = new Date().getMonth(), curYear = new Date().getFullYear(), pickedDay = null;
         function renderCal() {
             const cont = document.getElementById('calendarWidget');
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            today.setDate(today.getDate() + 1); // Разрешаем только со следующего дня
+            today.setDate(today.getDate() + 1);
             const fd = new Date(curYear, curMonth, 1).getDay();
             const dim = new Date(curYear, curMonth+1, 0).getDate();
             const mn = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
