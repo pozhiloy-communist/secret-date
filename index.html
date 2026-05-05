@@ -366,7 +366,6 @@
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden">
-                <!-- Секретный вариант с фото -->
                 <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer; margin: 0 auto;">
                     <img src="nalich.jpg" alt="Пётр Налич" class="cat-option-gif" style="width:100%; height:auto; max-height:120px; object-fit:cover; border-radius:12px;">
                     <span>Концерт Петра Налича</span>
@@ -424,7 +423,7 @@
         let customText = '';
         let selectedDate = null;
 
-        // Частицы (увеличено количество и добавлены эмодзи)
+        // Частицы
         (() => {
             const pc = document.getElementById('particles');
             const em = ['☕', '💫', '✨', '💕', '🐱', '🤎', '💘', '🏹', '💖', '🌟'];
@@ -529,14 +528,60 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
+        // ---------- ЕДИНЫЙ ВЫБОР ВАРИАНТА ----------
         window.selectOption = function(type, el) {
-            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            // Снимаем выделение со всех обычных карточек
+            document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
+            // Снимаем выделение с секретной карточки, если она видна
+            const secretCard = document.getElementById('secretHisCard');
+            if (secretCard) secretCard.classList.remove('selected');
+            // Очищаем поле своего варианта
+            const customInput = document.getElementById('customInputSecret');
+            if (customInput) customInput.value = '';
+            customText = '';
+            // Выделяем текущую
             if (el) el.classList.add('selected');
             selectedOption = type;
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // Пазл (без изменений)
+        window.selectSecretHis = function() {
+            // Снимаем выделение со всех обычных карточек
+            document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
+            // Снимаем выделение с других внутри секретного блока
+            document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
+            // Выделяем Налича
+            const card = document.getElementById('secretHisCard');
+            if (card) card.classList.add('selected');
+            // Очищаем поле своего варианта
+            const customInput = document.getElementById('customInputSecret');
+            if (customInput) customInput.value = '';
+            customText = '';
+            selectedOption = 'nalich';
+            document.getElementById('nextToCalendar').disabled = false;
+        };
+
+        window.updateCustomSecret = function() {
+            const val = document.getElementById('customInputSecret').value.trim();
+            // При вводе своего варианта снимаем выделение с Налича и обычных
+            document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
+            const secretCard = document.getElementById('secretHisCard');
+            if (secretCard) secretCard.classList.remove('selected');
+            if (val.length > 0) {
+                selectedOption = 'custom_secret';
+                customText = val;
+                document.getElementById('nextToCalendar').disabled = false;
+            } else {
+                // Если поле пустое, возвращаем выбор на Налича (или ничего)
+                selectedOption = 'nalich'; // или можно оставить null, но логично вернуть на Налича, так как это секретный блок
+                document.getElementById('nextToCalendar').disabled = false; // если нужно активно
+                // Но лучше сделать так: если стёрли свой вариант, выделяем Налича
+                if (secretCard) secretCard.classList.add('selected');
+                customText = '';
+            }
+        };
+
+        // Пазл
         const pieceSize = 100;
         const gap = 6;
         const step = pieceSize + gap;
@@ -697,6 +742,8 @@
                 document.getElementById('secretHisCard').classList.remove('selected');
                 document.getElementById('nextToCalendar').disabled = true;
                 selectedOption = null;
+                // При открытии секретного варианта очищаем выделение с обычных
+                document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
                 return;
             }
             const q = quizData[currentQuestion];
@@ -735,27 +782,6 @@
                     alert('К сожалению, подсказки закончились. Попробуй ещё раз!');
                 }
             }
-        };
-
-        window.updateCustomSecret = function() {
-            const val = document.getElementById('customInputSecret').value.trim();
-            if (val.length > 0) {
-                selectedOption = 'custom_secret';
-                customText = val;
-                document.getElementById('nextToCalendar').disabled = false;
-            } else {
-                if (selectedOption !== 'nalich') {
-                    document.getElementById('nextToCalendar').disabled = true;
-                }
-            }
-        };
-        window.selectSecretHis = function() {
-            document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('secretHisCard').classList.add('selected');
-            selectedOption = 'nalich';
-            document.getElementById('customInputSecret').value = '';
-            customText = '';
-            document.getElementById('nextToCalendar').disabled = false;
         };
 
         // Календарь
