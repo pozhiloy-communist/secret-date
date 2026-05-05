@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для Роси 💫</title>
+    <title>Канцелярия Амура 💘</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌹</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
@@ -161,8 +161,11 @@
         .option-card:hover { background: #f0e0cc; transform: scale(1.03); }
         .option-card.selected { border-color: #6b3a2a; background: #e8d5b7; }
         .cat-option-gif {
-            width: 100%; height: auto; max-height: 120px;
-            object-fit: contain; border-radius: 12px;
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            object-fit: contain;
+            border-radius: 12px;
         }
 
         .secret-card { margin-top: 15px; }
@@ -363,8 +366,9 @@
             <p id="puzzleHint" style="margin-top:10px;">🖱️ Нажимай на два фрагмента, чтобы поменять их местами</p>
             <div id="quizBlock" class="hidden"></div>
             <div id="secretReveal" class="hidden">
+                <!-- Секретный вариант с фото -->
                 <div class="option-card" onclick="selectSecretHis()" id="secretHisCard" style="cursor:pointer; margin: 0 auto;">
-                    <span style="font-size:36px;">🎵</span>
+                    <img src="nalich.jpg" alt="Пётр Налич" class="cat-option-gif" style="width:100%; height:auto; max-height:120px; object-fit:cover; border-radius:12px;">
                     <span>Концерт Петра Налича</span>
                     <small style="color:#8b6f5e;">[Дата и город уточняются]</small>
                 </div>
@@ -388,7 +392,7 @@
         <button onclick="goToConfirm()" id="confirmDateBtn" disabled>Подтвердить →</button>
     </div>
 
-    <!-- Экран 5b (секретное сообщение, если выбран Налич) -->
+    <!-- Экран 5b (секретное сообщение) -->
     <div id="screen5_secret" class="container hidden">
         <div class="big-emoji">🎵💖</div>
         <h2>Отлично!</h2>
@@ -420,19 +424,19 @@
         let customText = '';
         let selectedDate = null;
 
-        // Частицы
+        // Частицы (увеличено количество и добавлены эмодзи)
         (() => {
             const pc = document.getElementById('particles');
-            const em = ['☕', '💫', '✨', '💕', '🐱', '🤎'];
-            for (let i = 0; i < 12; i++) {
+            const em = ['☕', '💫', '✨', '💕', '🐱', '🤎', '💘', '🏹', '💖', '🌟'];
+            for (let i = 0; i < 20; i++) {
                 const s = document.createElement('span');
                 s.className = 'particle';
                 s.textContent = em[Math.floor(Math.random() * em.length)];
-                s.style.left = (i / 12 * 100 + (Math.random() * 5 - 2.5)) + '%';
+                s.style.left = (i / 20 * 100 + (Math.random() * 5 - 2.5)) + '%';
                 s.style.top = '100%';
-                s.style.animationDuration = (8 + Math.random() * 8) + 's';
+                s.style.animationDuration = (8 + Math.random() * 10) + 's';
                 s.style.animationDelay = Math.random() * 6 + 's';
-                s.style.fontSize = (16 + Math.random() * 18) + 'px';
+                s.style.fontSize = (16 + Math.random() * 20) + 'px';
                 pc.appendChild(s);
             }
         })();
@@ -532,7 +536,7 @@
             document.getElementById('nextToCalendar').disabled = false;
         };
 
-        // Пазл с outline вместо border, без дёрганья
+        // Пазл (без изменений)
         const pieceSize = 100;
         const gap = 6;
         const step = pieceSize + gap;
@@ -627,7 +631,6 @@
                     const congrats = document.getElementById('puzzleCongrats');
                     const frame = document.getElementById('puzzleFrame');
 
-                    // Плавное склеивание к центру без изменения размеров
                     puzzleElements.forEach(p => {
                         p.style.transition = 'transform 0.5s ease, opacity 0.6s ease';
                     });
