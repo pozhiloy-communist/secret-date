@@ -411,8 +411,8 @@
     <!-- Экран 7 (финал) -->
     <div id="screen7" class="container hidden">
         <div class="big-emoji">🎉💖</div>
-        <h2>Согласие отправлено!</h2>
-        <p>Твой выбор уже у того самого<br>таинственного отправителя ✉️</p>
+        <h2>Ура! Протокол «Рандеву» успешно запущен!</h2>
+        <p>Твоё согласие уже доставлено и подготовка началась.<br>Жди чуда — и оно обязательно случится!</p>
         <div class="big-emoji" style="font-size: 50px;">🐱☕✨</div>
         <p style="font-size: 14px; color: #a67c52; margin-top: 20px;">До встречи, Росинка! 💫</p>
     </div>
@@ -528,32 +528,24 @@
             alert('🚫 Отказы не принимаются! Попробуй ещё раз 😊');
         };
 
-        // ---------- ЕДИНЫЙ ВЫБОР ВАРИАНТА ----------
+        // Единый выбор варианта
         window.selectOption = function(type, el) {
-            // Снимаем выделение со всех обычных карточек
             document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
-            // Снимаем выделение с секретной карточки, если она видна
             const secretCard = document.getElementById('secretHisCard');
             if (secretCard) secretCard.classList.remove('selected');
-            // Очищаем поле своего варианта
             const customInput = document.getElementById('customInputSecret');
             if (customInput) customInput.value = '';
             customText = '';
-            // Выделяем текущую
             if (el) el.classList.add('selected');
             selectedOption = type;
             document.getElementById('nextToCalendar').disabled = false;
         };
 
         window.selectSecretHis = function() {
-            // Снимаем выделение со всех обычных карточек
             document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
-            // Снимаем выделение с других внутри секретного блока
             document.querySelectorAll('#secretReveal .option-card').forEach(c => c.classList.remove('selected'));
-            // Выделяем Налича
             const card = document.getElementById('secretHisCard');
             if (card) card.classList.add('selected');
-            // Очищаем поле своего варианта
             const customInput = document.getElementById('customInputSecret');
             if (customInput) customInput.value = '';
             customText = '';
@@ -563,7 +555,6 @@
 
         window.updateCustomSecret = function() {
             const val = document.getElementById('customInputSecret').value.trim();
-            // При вводе своего варианта снимаем выделение с Налича и обычных
             document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
             const secretCard = document.getElementById('secretHisCard');
             if (secretCard) secretCard.classList.remove('selected');
@@ -572,12 +563,10 @@
                 customText = val;
                 document.getElementById('nextToCalendar').disabled = false;
             } else {
-                // Если поле пустое, возвращаем выбор на Налича (или ничего)
-                selectedOption = 'nalich'; // или можно оставить null, но логично вернуть на Налича, так как это секретный блок
-                document.getElementById('nextToCalendar').disabled = false; // если нужно активно
-                // Но лучше сделать так: если стёрли свой вариант, выделяем Налича
+                selectedOption = 'nalich';
                 if (secretCard) secretCard.classList.add('selected');
                 customText = '';
+                document.getElementById('nextToCalendar').disabled = false;
             }
         };
 
@@ -742,7 +731,6 @@
                 document.getElementById('secretHisCard').classList.remove('selected');
                 document.getElementById('nextToCalendar').disabled = true;
                 selectedOption = null;
-                // При открытии секретного варианта очищаем выделение с обычных
                 document.querySelectorAll('.options-grid .option-card').forEach(c => c.classList.remove('selected'));
                 return;
             }
